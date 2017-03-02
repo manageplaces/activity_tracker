@@ -1,0 +1,31 @@
+module ActivityTracker
+  class ActivityBatchRepository
+    def initialize(class_name = nil)
+      class_name ||= ActivityTracker.configuration.activity_batch_class
+
+      @class_name = class_name
+      @klass = class_name.constantize
+      @foreign_key = "#{class_name.underscore}_id".to_sym
+      @relation_name = class_name.underscore.to_sym
+      @plural_relation_name = class_name.underscore.pluralize.to_sym
+    end
+
+    def create(user_id, is_closed = false)
+      @klass.new(
+        reciever_id: user_id,
+        is_closed: is_closed
+      )
+    end
+
+    def find_or_create(user_id, is_closed = false)
+      return create(user_id, closed) if is_closed
+
+      @klass.where(
+        'receiver_id = ? AND (created_at > ? or last_activity > ?)',
+        user_id,
+        DateTime.now.to_i - ActivityTracker.configuration.lifetime,
+        DateTime.now.to_i - ActivityTracker.configuration.idle_time
+      ).first || create(user_id, closed)
+    end
+  end
+end
