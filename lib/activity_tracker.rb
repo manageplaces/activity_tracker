@@ -14,6 +14,7 @@ require 'activity_tracker/batcher'
 require 'activity_tracker/collector'
 
 require 'activity_tracker/has_activities'
+require 'activity_tracker/define_activity'
 
 require 'activity_tracker/version'
 

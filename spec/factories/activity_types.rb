@@ -1,5 +1,7 @@
 require 'spec_helper'
 
-factory :activity_type, class: ::ActivityTracker::ActivityType do
-  name 'test1'
+FactoryGirl.define do
+  factory :activity_type, class: ::ActivityTracker::ActivityType do
+    name 'test1'
+  end
 end

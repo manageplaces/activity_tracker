@@ -1,7 +1,7 @@
 module ActivityTracker
-  def define_activity(&block)
-    obj = ::ActivityTracker::Factory.new(&block)
-
-    ::ActivityTracker::ActiivtyTypeRepository.add(obj)
+  def self.define_activity(&block)
+    repository = ActivityTypeRepository.instance
+    activity_type = ActivityType.new(&block)
+    repository.add(activity_type)
   end
 end
