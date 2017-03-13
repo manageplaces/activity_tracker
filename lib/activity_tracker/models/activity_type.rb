@@ -10,7 +10,15 @@ module ActivityTracker
       freeze
     end
 
-    [:name].each do |field|
+    def name(val = nil)
+      if val.nil?
+        instance_variable_get(:@name)
+      else
+        instance_variable_set(:@name, val.to_sym)
+      end
+    end
+
+    [].each do |field|
       define_method field.to_sym do |val = nil|
         var_name = "@#{field}"
 

@@ -20,7 +20,7 @@ describe ActivityTracker::ActivityType do
         name 'test2'
       end
 
-      expect(obj.name).to eq('test2')
+      expect(obj.name).to eq(:test2)
     end
   end
 
