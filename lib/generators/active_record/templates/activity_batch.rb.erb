@@ -4,7 +4,7 @@ class <%= activity_batch_class %> < ActiveRecord::Base
 
   belongs_to :receiver, class_name: '<%= user_class %>'
 
-  validates_presense_of :owner, :is_read, :is_sent
+  validates_presence_of :owner, :is_read, :is_sent
 
   before_save :update_last_activity
 

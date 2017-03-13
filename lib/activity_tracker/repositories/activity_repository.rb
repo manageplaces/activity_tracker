@@ -9,5 +9,15 @@ module ActivityTracker
       @relation_name = class_name.underscore.to_sym
       @plural_relation_name = class_name.underscore.pluralize.to_sym
     end
+
+    def add(activity)
+      raise ArgumentError unless activity.is_a?(@klass)
+
+      activity.save
+    end
+
+    def all
+      @klass.all
+    end
   end
 end
