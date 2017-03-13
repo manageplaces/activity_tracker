@@ -27,5 +27,15 @@ module ActivityTracker
         DateTime.now.to_i - ActivityTracker.configuration.idle_time
       ).first || create(user_id, closed)
     end
+
+    def add(activity_batch)
+      raise ArgumentError unless activity_batch.is_a?(@klass)
+
+      activity_batch.save
+    end
+
+    def all
+      @klass.all
+    end
   end
 end

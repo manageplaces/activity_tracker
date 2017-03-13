@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ActivityTracker::ActivityType do
+describe ActivityTracker::ActivityRepository do
   let(:instance) { ActivityTracker::ActivityRepository.new }
 
   describe '#add' do
