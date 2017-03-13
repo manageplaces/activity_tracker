@@ -17,6 +17,9 @@ end
 class Activity < ActiveRecord::Base
   has_and_belongs_to_many :activity_batches
 
-  belongs_to :sender, class_name: '<%= user_class %>'
+  belongs_to :sender, class_name: 'User'
   belongs_to :subject
+end
+
+class User < ActiveRecord::Base
 end

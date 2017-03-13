@@ -21,7 +21,6 @@ ActiveRecord::Schema.define do
     t.integer :sender_id
     t.references :subject, polymorphic: true
     t.datetime :created_at, null: false, required: true
-    t.boolean :is_sent, required: true, null: false
   end
 
   create_table :activities_activity_batches do |t|

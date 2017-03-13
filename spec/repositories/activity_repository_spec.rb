@@ -9,6 +9,13 @@ describe ActivityTracker::ActivityType do
       expect { instance.add('abc') }.to raise_exception(ArgumentError)
       expect { instance.add(222.33) }.to raise_exception(ArgumentError)
     end
+
+    it 'saves the activity' do
+      activity = build :activity
+
+      expect(instance.add(activity)).to eq(true)
+      expect(instance.all.count).to eq(1)
+    end
   end
 
   describe '#all' do
