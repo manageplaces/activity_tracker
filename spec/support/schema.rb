@@ -8,7 +8,7 @@ ActiveRecord::Schema.define do
   end
 
   create_table :activity_batches do |t|
-    t.integer :reciever_id, null: false, required: true, index: true
+    t.integer :receiver_id, null: false, required: true, index: true
     t.datetime :created_at, null: false, required: true
     t.timestamp :last_activity, required: true, null: false
     t.boolean :is_closed, required: true, null: false, default: false

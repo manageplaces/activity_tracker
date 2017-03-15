@@ -19,7 +19,7 @@ describe ActivityTracker::ActivityBatchRepository do
     it 'saves the activity' do
       activity_batch = build :activity_batch
 
-      expect(instance.add(activity)).to eq(true)
+      expect(instance.add(activity_batch)).to eq(true)
       expect(instance.all.count).to eq(1)
     end
   end

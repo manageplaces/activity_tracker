@@ -12,7 +12,7 @@ module ActivityTracker
 
     def create(user_id, is_closed = false)
       @klass.new(
-        reciever_id: user_id,
+        receiver_id: user_id,
         is_closed: is_closed
       )
     end
