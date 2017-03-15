@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'activity_tracker'
 
 require 'support/config'
