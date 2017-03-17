@@ -6,6 +6,7 @@ describe ActivityTracker.batch do
   end
 
   let(:user1) { create :user }
+  let(:user2) { create :user }
 
   let(:task) { create :task }
 
@@ -25,6 +26,27 @@ describe ActivityTracker.batch do
     end
 
     activities = Activity.all
+    activity = activities.first
+
     expect(activities.count).to eq(1)
+    expect(activity.activity_batches.count).to eq(1)
+    expect(activity.activity_batches.first.receiver_id).to eq(user1.id)
+  end
+
+  specify 'when batch called with batch param' do
+    user1.id
+
+    ActivityTracker.batch(sender: user2) do
+      user = user1
+      task.instance_eval { track_activity(user, :type1) }
+    end
+
+    activities = Activity.all
+    activity = activities.first
+
+    expect(activities.count).to eq(1)
+    expect(activity.sender).to eq(user2)
+    expect(activity.activity_batches.count).to eq(1)
+    expect(activity.activity_batches.first.receiver_id).to eq(user1.id)
   end
 end

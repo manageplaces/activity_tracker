@@ -12,8 +12,8 @@ module ActivityTracker
 
         collector = ::ActivityTracker::CollectorRepository.instance.get
 
-        options[:receivers] = receivers
-        options[:type] = type
+        options[:receivers] = receivers.is_a?(Array) ? receivers : [receivers]
+        options[:activity_type] = type
 
         collector.add(options)
       end

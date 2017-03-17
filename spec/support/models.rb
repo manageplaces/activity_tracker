@@ -23,6 +23,8 @@ class Activity < ActiveRecord::Base
 
   belongs_to :sender, class_name: 'User'
   belongs_to :subject
+
+  validates_presence_of :activity_type
 end
 
 class User < ActiveRecord::Base

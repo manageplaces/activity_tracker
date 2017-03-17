@@ -25,7 +25,7 @@ module ActivityTracker
         user_id,
         DateTime.now.to_i - ActivityTracker.configuration.lifetime,
         DateTime.now.to_i - ActivityTracker.configuration.idle_time
-      ).first || create(user_id, closed)
+      ).first || create(user_id, is_closed)
     end
 
     def add(activity_batch)

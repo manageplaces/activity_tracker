@@ -4,10 +4,13 @@ module ActivityTracker
       @options = options
       @block = block
 
+      default_permissions_init
+
       @activity_repository = ActivityRepository.new
       @activity_batch_repository = ActivityBatchRepository.new
 
       @collected_activities = []
+      @user_to_batch = []
     end
 
     def process
@@ -18,9 +21,7 @@ module ActivityTracker
       begin
         @block.call
 
-
         filter_activities
-
         insert_activities
       rescue StandardError => e
         return false
@@ -42,6 +43,8 @@ module ActivityTracker
 
         next unless receivers
 
+        activity_params = @options.merge(activity_params)
+
         @collected_activities << [
           @activity_repository.factory(activity_params),
           receivers
@@ -49,9 +52,19 @@ module ActivityTracker
       end
     end
 
+    def default_permissions_init
+      @default_params = @options
+    end
+
     def insert_activities
       @collected_activities.each do |activity, receivers|
         @activity_repository.add(activity)
+
+        receivers.each do |receiver|
+          batch = @activity_batch_repository.find_or_create(receiver.id, false)
+          @activity_batch_repository.add(batch)
+          activity.activity_batches << batch
+        end
       end
     end
   end
