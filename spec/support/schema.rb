@@ -7,6 +7,12 @@ ActiveRecord::Schema.define do
     t.timestamps
   end
 
+  create_table :tasks, force: true do |t|
+    t.string :name
+
+    t.timestamps
+  end
+
   create_table :activity_batches do |t|
     t.integer :receiver_id, null: false, required: true, index: true
     t.datetime :created_at, null: false, required: true

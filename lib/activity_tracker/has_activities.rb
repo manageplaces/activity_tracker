@@ -1,17 +1,21 @@
 require 'active_support/concern'
 
 module ActivityTracker
-  module HasActivity
+  module HasActivities
     extend ActiveSupport::Concern
 
     included do
-      def track_activity(*params)
+      has_many :activities, as: :resource, dependent: :destroy
+
+      def track_activity(receivers, type, options = {})
         return unless ::ActivityTracker::CollectorRepository.instance.exists?
 
-        activity = ::ActivityTracker::ActivityRepository.factory(params)
-        collector = ::ActivityTracker.CollectorRepository.instance.get
+        collector = ::ActivityTracker::CollectorRepository.instance.get
 
-        collector.add(activity)
+        options[:receivers] = receivers
+        options[:type] = type
+
+        collector.add(options)
       end
     end
   end

@@ -27,3 +27,7 @@ end
 
 class User < ActiveRecord::Base
 end
+
+class Task < ActiveRecord::Base
+  include ActivityTracker::HasActivities
+end

@@ -1,6 +1,6 @@
 module ActivityTracker
-  def batch(&block)
-    b = Batcher.new(&block)
+  def self.batch(options = {}, &block)
+    b = Batcher.new(options, &block)
 
     b.process
   end

@@ -4,8 +4,8 @@ module ActivityTracker
       @activities = []
     end
 
-    def add(activity)
-      @activities << activity
+    def add(params)
+      @activities << params
     end
 
     def activities
