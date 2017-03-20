@@ -14,7 +14,6 @@ class ActivityTrackerModels < ActiveRecord::Migration
       t.integer :sender_id
       t.references :subject, polymorphic: true
       t.datetime :created_at, null: false, required: true
-      t.boolean :is_sent, required: true, null: false
     end
 
     create_table(:<%= "#{activity_class.underscore.pluralize}_#{activity_batch_class.underscore.pluralize}" %>) do |t|

@@ -22,7 +22,7 @@ class Activity < ActiveRecord::Base
   has_and_belongs_to_many :activity_batches
 
   belongs_to :sender, class_name: 'User'
-  belongs_to :subject
+  belongs_to :subject, polymorphic: true
 
   validates_presence_of :activity_type
 end
