@@ -1,9 +1,5 @@
 module ActivityTracker
   class ActivityTypeRepository
-    def initialize
-      @activity_types = []
-    end
-
     def add(activity_type = nil)
       raise ArgumentError unless activity_type.is_a?(ActivityType)
       @activity_types << activity_type
@@ -31,6 +27,12 @@ module ActivityTracker
 
     def self.reset
       @instance = nil
+    end
+
+    private
+
+    def initialize
+      @activity_types = []
     end
   end
 end
