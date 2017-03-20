@@ -4,7 +4,8 @@ module ActivityTracker
       @options = options
       @block = block
 
-      default_permissions_init
+      options_init
+      default_params_init
 
       @activity_repository = ActivityRepository.new
       @activity_batch_repository = ActivityBatchRepository.new
@@ -24,7 +25,7 @@ module ActivityTracker
         filter_activities
         insert_activities
       rescue StandardError => e
-        return false
+        raise e
       ensure
         CollectorRepository.instance.clear
       end
@@ -34,6 +35,22 @@ module ActivityTracker
 
     protected
 
+    def options_init
+      if @options.include?(:only)
+        only = @options.delete(:only)
+
+        @only = only.is_a?(Array) ? only : [only]
+      end
+
+      if @options.include?(:without)
+        without = @options.delete(:without)
+
+        @without = without.is_a?(Array) ? without : [without]
+      end
+
+      raise ArgumentError if @only && @without
+    end
+
     def filter_activities
       activities = @collector.activities.to_a
 
@@ -41,7 +58,8 @@ module ActivityTracker
         receivers = activity_params[:receivers]
         activity_params.delete(:receivers)
 
-        next unless receivers
+        next if receivers.try(:count).try(:zero?)
+        next if type_filtered?(activity_params[:activity_type])
 
         activity_params = @options.merge(activity_params)
 
@@ -52,8 +70,13 @@ module ActivityTracker
       end
     end
 
-    def default_permissions_init
+    def default_params_init
       @default_params = @options
+    end
+
+    def type_filtered?(activity_type)
+      (@only && !@only.include?(activity_type)) ||
+        (@without && @without.include?(activity_type))
     end
 
     def insert_activities

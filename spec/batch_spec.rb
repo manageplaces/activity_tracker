@@ -49,4 +49,44 @@ describe ActivityTracker.batch do
     expect(activity.activity_batches.count).to eq(1)
     expect(activity.activity_batches.first.receiver_id).to eq(user1.id)
   end
+
+  describe 'type filters' do
+    specify 'when batch called with both :only and :without params' do
+      expect do
+        ActivityTracker.batch(only: [:type1], without: [:type2])
+      end.to raise_error(ArgumentError)
+    end
+
+    it 'skips all activities except the :only ones' do
+      user1.id
+
+      ActivityTracker.batch(sender: user2, only: [:type1]) do
+        user = user1
+        task.instance_eval { track_activity(user, :type1) }
+        task.instance_eval { track_activity(user, :type2) }
+      end
+
+      activities = Activity.all
+      activity = activities.first
+
+      expect(activities.count).to eq(1)
+      expect(activity.activity_type.to_sym).to eq(:type1)
+    end
+
+    it 'skips the :without specified activities' do
+      user1.id
+
+      ActivityTracker.batch(sender: user2, without: [:type1]) do
+        user = user1
+        task.instance_eval { track_activity(user, :type1) }
+        task.instance_eval { track_activity(user, :type2) }
+      end
+
+      activities = Activity.all
+      activity = activities.first
+
+      expect(activities.count).to eq(1)
+      expect(activity.activity_type.to_sym).to eq(:type2)
+    end
+  end
 end
