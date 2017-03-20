@@ -40,6 +40,13 @@ describe ActivityTracker::ActivityType do
       expect { @instance.add }.to raise_error(ArgumentError)
       expect { @instance.add(123) }.to raise_error(ArgumentError)
     end
+
+    it 'replaces existing ActivityType' do
+      @instance.add(activity_type)
+      @instance.add(activity_type)
+
+      expect(@instance.all.count).to eq(1)
+    end
   end
 
   describe '#all' do

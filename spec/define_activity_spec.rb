@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ActivityTracker.define_activity do
+describe 'ActivityTracker.define_activity' do
   specify 'when block given' do
     ActivityTracker::ActivityTypeRepository.reset
     repository = ActivityTracker::ActivityTypeRepository.instance
