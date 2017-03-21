@@ -8,14 +8,17 @@ module ActivityTracker
       has_many :activities, as: :resource, dependent: :destroy
 
       def track_activity(receivers, type, options = {})
-        return unless ::ActivityTracker::CollectorRepository.instance.exists?
+        if self.is_a?(ActiveRecord::Base) && !options.include?(:subject)
+          options[:subject] = self
+        end
 
-        collector = ::ActivityTracker::CollectorRepository.instance.get
+        ::ActivityTracker.track_activity(receivers, type, options)
+      end
+    end
 
-        options[:receivers] = receivers.is_a?(Array) ? receivers : [receivers]
-        options[:activity_type] = type
-
-        collector.add(options)
+    class_methods do
+      def track_activity(receivers, type, options = {})
+        ::ActivityTracker.track_activity(receivers, type, options)
       end
     end
   end
