@@ -16,7 +16,7 @@ module ActivityTracker
       end
     end
 
-    class_methods do
+    module ClassMethods
       def track_activity(receivers, type, options = {})
         ::ActivityTracker.track_activity(receivers, type, options)
       end
