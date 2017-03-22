@@ -99,6 +99,8 @@ describe ActivityTracker.batch do
       end
 
       expect(ActivityBatch.all.count).to eq(2)
+      expect(ActivityBatch.where(is_closed: true).count).to eq(1)
+      expect(ActivityBatch.where(is_closed: false).count).to eq(1)
     end
   end
 end
