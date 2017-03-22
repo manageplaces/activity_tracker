@@ -18,7 +18,7 @@ module ActivityTracker
     end
 
     def find_or_create(user_id, is_closed = false)
-      return create(user_id, closed) if is_closed
+      return create(user_id, true) if is_closed
 
       @klass.where(
         'receiver_id = ? AND (created_at > ? or last_activity > ?)',

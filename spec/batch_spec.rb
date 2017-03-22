@@ -89,4 +89,16 @@ describe ActivityTracker.batch do
       expect(activity.activity_type.to_sym).to eq(:type2)
     end
   end
+
+  describe 'unbatchable activities' do
+    it 'does not batch unbatchable activities' do
+      ActivityTracker.batch(sender: user2, without: [:type1]) do
+        user = user1
+        task.instance_eval { track_activity(user, :type2) }
+        task.instance_eval { track_activity(user, :unbatchable_type_1) }
+      end
+
+      expect(ActivityBatch.all.count).to eq(2)
+    end
+  end
 end
