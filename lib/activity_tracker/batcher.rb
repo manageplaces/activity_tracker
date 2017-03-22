@@ -25,7 +25,9 @@ module ActivityTracker
         filter_activities
         insert_activities
       rescue StandardError => e
+        # :nocov:
         raise e
+        # :nocov:
       ensure
         CollectorRepository.instance.clear
       end
