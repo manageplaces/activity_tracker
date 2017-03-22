@@ -27,6 +27,7 @@ ActiveRecord::Schema.define do
     t.integer :sender_id, index: true
     t.references :subject, polymorphic: true
     t.datetime :created_at, null: false, required: true
+    t.text :metadata
   end
 
   create_table :activities_activity_batches do |t|

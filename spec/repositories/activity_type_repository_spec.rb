@@ -12,6 +12,20 @@ describe ActivityTracker::ActivityType do
     end
   end
 
+  let(:activity_type_metadata) do
+    ActivityTracker::ActivityType.new do
+      name 'activity_type_1'
+      metadata_fields [:metadata1, :metadata2]
+    end
+  end
+
+  let(:activity_type_metadata_2) do
+    ActivityTracker::ActivityType.new do
+      name 'activity_type_1'
+      metadata_fields [:metadata1, :metadata3]
+    end
+  end
+
   describe '.instance' do
     it 'returns a repository object' do
       expect(@instance).to be_a(ActivityTracker::ActivityTypeRepository)
@@ -70,6 +84,23 @@ describe ActivityTracker::ActivityType do
 
       expect(@instance.get('activity_type_1')).to eq(activity_type)
       expect(@instance.get(:activity_type_1)).to eq(activity_type)
+    end
+  end
+
+  describe '#metadata_fields' do
+    it 'returns empty array if nothing set' do
+      expect(@instance.metadata_fields).to eq([])
+    end
+
+    it 'adds no metadata when actiivty type without metadata added' do
+      @instance.add(activity_type)
+      expect(@instance.metadata_fields).to eq([])
+    end
+
+    it 'adds metadata when activity_type has metadata fields' do
+      @instance.add(activity_type_metadata)
+      @instance.add(activity_type_metadata_2)
+      expect(@instance.metadata_fields).to eq([:metadata1, :metadata2, :metadata3])
     end
   end
 end

@@ -58,7 +58,7 @@ module ActivityTracker
         receivers = activity_params[:receivers]
         activity_params.delete(:receivers)
 
-        next if receivers.try(:count).try(:zero?)
+        next if receivers.try(:count).try(:zero?) && !activity_params[:subject]
         next if type_filtered?(activity_params[:activity_type])
 
         activity_params = @options.merge(activity_params)

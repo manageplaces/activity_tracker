@@ -25,6 +25,10 @@ class Activity < ActiveRecord::Base
   belongs_to :subject, polymorphic: true
 
   validates_presence_of :activity_type
+
+  def type
+    activity_type ? ::ActivityTracker::ActivityTypeRepository.get(activity_type) : nil
+  end
 end
 
 class User < ActiveRecord::Base

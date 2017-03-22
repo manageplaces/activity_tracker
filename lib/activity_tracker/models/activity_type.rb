@@ -18,8 +18,8 @@ module ActivityTracker
       end
     end
 
-    [].each do |field|
-      define_method field.to_sym do |val = nil|
+    [:metadata_fields].each do |field|
+      define_method field do |val = nil|
         var_name = "@#{field}"
 
         if val.nil?
