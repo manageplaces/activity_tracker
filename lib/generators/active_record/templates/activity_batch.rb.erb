@@ -1,20 +1,19 @@
 class <%= activity_batch_class %> < ActiveRecord::Base
-
-  has_and_belongs_to_many :<%= activity_class.underscore.pluralize %>, after_add: :update_last_activity
+  has_many :<%= user_activity_class.underscore.pluralize %>
+  has_many :<%= activity_class.underscore.pluralize %>, after_add: :update_last_activity, through: :<%= user_activity_class.underscore.pluralize %>
 
   belongs_to :receiver, class_name: '<%= user_class %>'
 
   validates_presence_of :receiver
   validates_inclusion_of :is_closed, in: [true, false]
   validates_inclusion_of :is_sent, in: [true, false]
-  validates_inclusion_of :is_read, in: [true, false]
 
   before_validation :update_last_activity
 
   protected
 
-  def update_last_activity(_activity = nil)
+  def update_last_activity(activity = nil)
     self.last_activity = [
-      _activity.try(:created_at), last_activity].compact.max || DateTime.now
+      activity.try(:created_at), last_activity].compact.max || DateTime.now
   end
 end

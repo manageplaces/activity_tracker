@@ -15,6 +15,11 @@ module ActivityTracker
                default: 'ActivityBatch',
                banner: 'ActivityBatch class name'
 
+      argument :user_activity_class,
+               type: :string,
+               default: 'UserActivity',
+               banner: 'UserActivity class name'
+
       argument :user_class,
                type: :string,
                default: 'User',
@@ -27,6 +32,7 @@ module ActivityTracker
           'activity_tracker_models',
           activity_class,
           activity_batch_class,
+          user_activity_class,
           user_class
         ]
       end

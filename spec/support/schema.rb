@@ -18,7 +18,6 @@ ActiveRecord::Schema.define do
     t.datetime :created_at, null: false, required: true
     t.timestamp :last_activity, required: true, null: false
     t.boolean :is_closed, required: true, null: false, default: false
-    t.boolean :is_read, required: true, null: false, default: false
     t.boolean :is_sent, required: true, null: false, default: false
   end
 
@@ -30,9 +29,10 @@ ActiveRecord::Schema.define do
     t.text :metadata
   end
 
-  create_table :activities_activity_batches do |t|
+  create_table :user_activities do |t|
     t.belongs_to :activity, required: true, null: false, index: true
     t.belongs_to :activity_batch, required: true, null: false, index: true
+    t.boolean :is_read, required: true, null: false, default: false
   end
 
   add_foreign_key :activity_batches, :users, column: :receiver_id, on_delete: :cascade

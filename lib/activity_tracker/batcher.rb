@@ -83,16 +83,16 @@ module ActivityTracker
 
     def insert_activities
       @collected_activities.each do |activity, receivers|
-        @activity_repository.add(activity)
-
         type = ActivityTypeRepository.instance.get(activity.activity_type)
         batchable = type.batchable
 
         receivers.each do |receiver|
           batch = @activity_batch_repository.find_or_create(receiver.id, !batchable)
           @activity_batch_repository.add(batch)
-          activity.activity_batches << batch
+          activity.user_activities.build(activity_batch: batch)
         end
+
+        @activity_repository.add(activity)
       end
     end
   end

@@ -16,6 +16,11 @@ module ActiveRecord
                default: 'ActivityBatch',
                banner: 'ActivityBatch class name'
 
+      argument :user_activity_class,
+               type: :string,
+               default: 'UserActivity',
+               banner: 'UserActivity class name'
+
       argument :user_class,
                type: :string,
                default: 'User',
@@ -27,6 +32,10 @@ module ActiveRecord
 
       def generate_activity_batch_model
         template 'activity_batch.rb.erb', activity_batch_model_path
+      end
+
+      def user_activity_model
+        template 'user_activity.rb.erb', user_activity_model_path
       end
 
       def create_migrations
@@ -47,11 +56,12 @@ module ActiveRecord
         )
       end
 
-      def activity_activity_batch_model_path
-        filename = "#{activity_class.underscore.downcase}_"
-        filename += "#{activity_batch_class.underscore.downcase}.rb"
-
-        File.join('app', 'models', filename)
+      def user_activity_model_path
+        File.join(
+          'app',
+          'models',
+          "#{user_activity_class.underscore.downcase}.rb"
+        )
       end
 
       def migration_path

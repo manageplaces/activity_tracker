@@ -1,12 +1,12 @@
 class ActivityBatch < ActiveRecord::Base
-  has_and_belongs_to_many :activities, after_add: :update_last_activity
+  has_many :user_activities
+  has_many :activities, after_add: :update_last_activity, through: :user_activities
 
   belongs_to :receiver, class_name: 'User'
 
   validates_presence_of :receiver
   validates_inclusion_of :is_closed, in: [true, false]
   validates_inclusion_of :is_sent, in: [true, false]
-  validates_inclusion_of :is_read, in: [true, false]
 
   before_validation :update_last_activity
 
@@ -19,7 +19,8 @@ class ActivityBatch < ActiveRecord::Base
 end
 
 class Activity < ActiveRecord::Base
-  has_and_belongs_to_many :activity_batches
+  has_many :user_activities
+  has_many :activity_batches, through: :user_activities
 
   belongs_to :sender, class_name: 'User'
   belongs_to :subject, polymorphic: true
@@ -29,6 +30,11 @@ class Activity < ActiveRecord::Base
   def type
     activity_type ? ::ActivityTracker::ActivityTypeRepository.get(activity_type) : nil
   end
+end
+
+class UserActivity < ActiveRecord::Base
+  belongs_to :activity
+  belongs_to :activity_batch
 end
 
 class User < ActiveRecord::Base
