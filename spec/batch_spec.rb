@@ -14,7 +14,7 @@ describe ActivityTracker.batch do
     ActivityTracker.batch { 2 + 2 }
 
     expect(ActivityTracker::ActivityRepository.new.all.count).to eq(0)
-    expect(ActivityTracker::ActivityBatchRepository.new.all.count).to eq(0)
+    expect(ActivityTracker::NotificationBatchRepository.new.all.count).to eq(0)
   end
 
   specify 'when batch called with one activity and one receiver' do
@@ -29,8 +29,8 @@ describe ActivityTracker.batch do
     activity = activities.first
 
     expect(activities.count).to eq(1)
-    expect(activity.activity_batches.count).to eq(1)
-    expect(activity.activity_batches.first.receiver_id).to eq(user1.id)
+    expect(activity.notification_batches.count).to eq(1)
+    expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
   end
 
   specify 'when batch called with batch param' do
@@ -46,8 +46,8 @@ describe ActivityTracker.batch do
 
     expect(activities.count).to eq(1)
     expect(activity.sender).to eq(user2)
-    expect(activity.activity_batches.count).to eq(1)
-    expect(activity.activity_batches.first.receiver_id).to eq(user1.id)
+    expect(activity.notification_batches.count).to eq(1)
+    expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
   end
 
   describe 'type filters' do
@@ -98,9 +98,9 @@ describe ActivityTracker.batch do
         task.instance_eval { track_activity(user, :unbatchable_type_1) }
       end
 
-      expect(ActivityBatch.all.count).to eq(2)
-      expect(ActivityBatch.where(is_closed: true).count).to eq(1)
-      expect(ActivityBatch.where(is_closed: false).count).to eq(1)
+      expect(NotificationBatch.all.count).to eq(2)
+      expect(NotificationBatch.where(is_closed: true).count).to eq(1)
+      expect(NotificationBatch.where(is_closed: false).count).to eq(1)
     end
   end
 end

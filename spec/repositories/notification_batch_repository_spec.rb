@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ActivityTracker::ActivityBatchRepository do
-  let(:instance) { ActivityTracker::ActivityBatchRepository.new }
+describe ActivityTracker::NotificationBatchRepository do
+  let(:instance) { ActivityTracker::NotificationBatchRepository.new }
 
   let(:user) { create :user }
   let(:user_id) { user.id }
@@ -10,16 +10,16 @@ describe ActivityTracker::ActivityBatchRepository do
   let(:user2_id) { user2.id }
 
   describe '#add' do
-    it 'requires an ActivityBatch object' do
+    it 'requires an NotificationBatch object' do
       expect { instance.add }.to raise_exception(ArgumentError)
       expect { instance.add('abc') }.to raise_exception(ArgumentError)
       expect { instance.add(222.33) }.to raise_exception(ArgumentError)
     end
 
     it 'saves the activity' do
-      activity_batch = build :activity_batch
+      notification_batch = build :notification_batch
 
-      expect(instance.add(activity_batch)).to eq(true)
+      expect(instance.add(notification_batch)).to eq(true)
       expect(instance.all.count).to eq(1)
     end
   end
@@ -32,10 +32,10 @@ describe ActivityTracker::ActivityBatchRepository do
 
   describe '#create' do
 
-    it 'creates an ActivityBatch object' do
-      activity_batch = instance.create(user_id)
-      expect(activity_batch).to be_a(ActivityBatch)
-      expect(activity_batch.persisted?).to eq(false)
+    it 'creates an NotificationBatch object' do
+      notification_batch = instance.create(user_id)
+      expect(notification_batch).to be_a(NotificationBatch)
+      expect(notification_batch.persisted?).to eq(false)
     end
   end
 

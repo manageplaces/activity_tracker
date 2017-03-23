@@ -1,6 +1,6 @@
-class ActivityBatch < ActiveRecord::Base
-  has_many :user_activities
-  has_many :activities, after_add: :update_last_activity, through: :user_activities
+class NotificationBatch < ActiveRecord::Base
+  has_many :notifications
+  has_many :activities, after_add: :update_last_activity, through: :notifications
 
   belongs_to :receiver, class_name: 'User'
 
@@ -19,8 +19,8 @@ class ActivityBatch < ActiveRecord::Base
 end
 
 class Activity < ActiveRecord::Base
-  has_many :user_activities
-  has_many :activity_batches, through: :user_activities
+  has_many :notifications
+  has_many :notification_batches, through: :notifications
 
   belongs_to :sender, class_name: 'User'
   belongs_to :subject, polymorphic: true
@@ -32,9 +32,9 @@ class Activity < ActiveRecord::Base
   end
 end
 
-class UserActivity < ActiveRecord::Base
+class Notification < ActiveRecord::Base
   belongs_to :activity
-  belongs_to :activity_batch
+  belongs_to :notification_batch
 end
 
 class User < ActiveRecord::Base

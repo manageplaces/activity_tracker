@@ -13,7 +13,7 @@ ActiveRecord::Schema.define do
     t.timestamps
   end
 
-  create_table :activity_batches do |t|
+  create_table :notification_batches do |t|
     t.integer :receiver_id, null: false, required: true, index: true
     t.datetime :created_at, null: false, required: true
     t.timestamp :last_activity, required: true, null: false
@@ -29,12 +29,12 @@ ActiveRecord::Schema.define do
     t.text :metadata
   end
 
-  create_table :user_activities do |t|
+  create_table :notifications do |t|
     t.belongs_to :activity, required: true, null: false, index: true
-    t.belongs_to :activity_batch, required: true, null: false, index: true
+    t.belongs_to :notification_batch, required: true, null: false, index: true
     t.boolean :is_read, required: true, null: false, default: false
   end
 
-  add_foreign_key :activity_batches, :users, column: :receiver_id, on_delete: :cascade
+  add_foreign_key :notification_batches, :users, column: :receiver_id, on_delete: :cascade
   add_foreign_key :activities, :users, column: :sender_id, on_delete: :cascade
 end

@@ -6,7 +6,7 @@ require 'activity_tracker/models/activity_type'
 
 require 'activity_tracker/repositories/activity_repository'
 require 'activity_tracker/repositories/activity_type_repository'
-require 'activity_tracker/repositories/activity_batch_repository'
+require 'activity_tracker/repositories/notification_batch_repository'
 require 'activity_tracker/repositories/collector_repository'
 
 require 'activity_tracker/batch'

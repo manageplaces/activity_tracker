@@ -9,14 +9,14 @@ module ActivityTracker
   end
 
   class Configuration
-    attr_accessor :activity_class, :activity_batch_class,
-                  :user_activity_class, :user_class,
+    attr_accessor :activity_class, :notification_batch_class,
+                  :notification_class, :user_class,
                   :idle_time, :lifetime
 
     def initialize
       @activity_class = 'Activity'
-      @activity_batch_class = 'ActivityBatch'
-      @user_activity_class = 'UserActivity'
+      @notification_batch_class = 'NotificationBatch'
+      @notification_class = 'Notification'
       @user_class = 'User'
 
       @idle_time = 600

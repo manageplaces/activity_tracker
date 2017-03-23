@@ -8,10 +8,9 @@ module ActivityTracker
       default_params_init
 
       @activity_repository = ActivityRepository.new
-      @activity_batch_repository = ActivityBatchRepository.new
+      @notification_batch_repository = NotificationBatchRepository.new
 
       @collected_activities = []
-      @user_to_batch = []
     end
 
     def process
@@ -87,9 +86,9 @@ module ActivityTracker
         batchable = type.batchable
 
         receivers.each do |receiver|
-          batch = @activity_batch_repository.find_or_create(receiver.id, !batchable)
-          @activity_batch_repository.add(batch)
-          activity.user_activities.build(activity_batch: batch)
+          batch = @notification_batch_repository.find_or_create(receiver.id, !batchable)
+          @notification_batch_repository.add(batch)
+          activity.notifications.build(notification_batch: batch)
         end
 
         @activity_repository.add(activity)

@@ -1,7 +1,7 @@
 module ActivityTracker
-  class ActivityBatchRepository
+  class NotificationBatchRepository
     def initialize(class_name = nil)
-      class_name ||= ActivityTracker.configuration.activity_batch_class
+      class_name ||= ActivityTracker.configuration.notification_batch_class
 
       @class_name = class_name
       @klass = class_name.constantize
@@ -28,10 +28,10 @@ module ActivityTracker
       ).order('last_activity desc').first || create(user_id, is_closed)
     end
 
-    def add(activity_batch)
-      raise ArgumentError unless activity_batch.is_a?(@klass)
+    def add(notification_batch)
+      raise ArgumentError unless notification_batch.is_a?(@klass)
 
-      activity_batch.save
+      notification_batch.save
     end
 
     def all
