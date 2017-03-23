@@ -22,7 +22,7 @@ module ActivityTracker
         end
       end
 
-      inject_metadata_fields if changed_metadata
+      # inject_metadata_fields if changed_metadata
     end
 
     def get(activity_type_name)
