@@ -2,6 +2,7 @@ module ActivityTracker
   class ActivityType
     def initialize(params = {}, &block)
       @batchable = true
+      @skip_sender = true
 
       params.each do |key, value|
         instance_variable_set("@#{key}", value)
@@ -20,7 +21,10 @@ module ActivityTracker
       end
     end
 
-    [:metadata_fields, :to_text, :to_html, :batchable].each do |field|
+    [
+      :metadata_fields, :to_text, :to_html, :batchable,
+      :skip_sender
+    ].each do |field|
       define_method field do |val = nil, &block|
         var_name = "@#{field}"
 

@@ -12,3 +12,8 @@ ActivityTracker.define_activity do
   name 'unbatchable_type_1'
   batchable false
 end
+
+ActivityTracker.define_activity do
+  name 'no_skip_sender_type_1'
+  skip_sender false
+end

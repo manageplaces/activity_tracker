@@ -103,4 +103,24 @@ describe ActivityTracker.batch do
       expect(NotificationBatch.where(is_closed: false).count).to eq(1)
     end
   end
+
+  describe 'skip_sender option' do
+    it 'is enabled by default' do
+      ActivityTracker.batch(sender: user1) do
+        users = [user1, user2]
+        task.instance_eval { track_activity(users, :type2) }
+      end
+
+      expect(NotificationBatch.all.count).to eq(1)
+    end
+
+    it 'does not skip senders if disabled' do
+      ActivityTracker.batch(sender: user1) do
+        users = [user1, user2]
+        task.instance_eval { track_activity(users, :no_skip_sender_type_1) }
+      end
+
+      expect(NotificationBatch.all.count).to eq(2)
+    end
+  end
 end

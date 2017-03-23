@@ -59,10 +59,17 @@ module ActivityTracker
         receivers = activity_params[:receivers]
         activity_params.delete(:receivers)
 
+        type_string = activity_params[:activity_type]
+        type_obj = ActivityTypeRepository.instance.get(type_string)
+
         next if receivers.try(:count).try(:zero?) && !activity_params[:subject]
-        next if type_filtered?(activity_params[:activity_type])
+        next if type_filtered?(type_string)
 
         activity_params = @options.merge(activity_params)
+
+        if type_obj.skip_sender && activity_params[:sender] && !receivers.try(:count).zero?
+          receivers.reject! { |r| r.id == activity_params[:sender].id }
+        end
 
         @collected_activities << [
           @activity_repository.factory(activity_params),
