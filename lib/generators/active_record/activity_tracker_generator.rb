@@ -11,15 +11,15 @@ module ActiveRecord
                default: 'Activity',
                banner: 'Activity class name'
 
-      argument :activity_batch_class,
+      argument :notification_batch_class,
                type: :string,
-               default: 'ActivityBatch',
-               banner: 'ActivityBatch class name'
+               default: 'NotificationBatch',
+               banner: 'NotificationBatch class name'
 
-      argument :user_activity_class,
+      argument :notification_class,
                type: :string,
-               default: 'UserActivity',
-               banner: 'UserActivity class name'
+               default: 'Notification',
+               banner: 'Notification class name'
 
       argument :user_class,
                type: :string,
@@ -30,12 +30,12 @@ module ActiveRecord
         template 'activity.rb.erb', activity_model_path
       end
 
-      def generate_activity_batch_model
-        template 'activity_batch.rb.erb', activity_batch_model_path
+      def generate_notification_batch_model
+        template 'notification_batch.rb.erb', notification_batch_model_path
       end
 
-      def user_activity_model
-        template 'user_activity.rb.erb', user_activity_model_path
+      def notification_model
+        template 'notification.rb.erb', notification_model_path
       end
 
       def create_migrations
@@ -48,19 +48,19 @@ module ActiveRecord
         File.join('app', 'models', "#{activity_class.underscore.downcase}.rb")
       end
 
-      def activity_batch_model_path
+      def notification_batch_model_path
         File.join(
           'app',
           'models',
-          "#{activity_batch_class.underscore.downcase}.rb"
+          "#{notification_batch_class.underscore.downcase}.rb"
         )
       end
 
-      def user_activity_model_path
+      def notification_model_path
         File.join(
           'app',
           'models',
-          "#{user_activity_class.underscore.downcase}.rb"
+          "#{notification_class.underscore.downcase}.rb"
         )
       end
 

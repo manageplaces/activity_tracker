@@ -10,15 +10,15 @@ module ActivityTracker
                default: 'Activity',
                banner: 'Activity class name'
 
-      argument :activity_batch_class,
+      argument :notification_batch_class,
                type: :string,
-               default: 'ActivityBatch',
-               banner: 'ActivityBatch class name'
+               default: 'NotificationBatch',
+               banner: 'NotificationBatch class name'
 
-      argument :user_activity_class,
+      argument :notification_class,
                type: :string,
-               default: 'UserActivity',
-               banner: 'UserActivity class name'
+               default: 'Notification',
+               banner: 'Notification class name'
 
       argument :user_class,
                type: :string,
@@ -31,8 +31,8 @@ module ActivityTracker
         invoke invoked, [
           'activity_tracker_models',
           activity_class,
-          activity_batch_class,
-          user_activity_class,
+          notification_batch_class,
+          notification_class,
           user_class
         ]
       end

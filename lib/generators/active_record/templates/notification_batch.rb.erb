@@ -1,6 +1,6 @@
-class <%= activity_batch_class %> < ActiveRecord::Base
-  has_many :<%= user_activity_class.underscore.pluralize %>
-  has_many :<%= activity_class.underscore.pluralize %>, after_add: :update_last_activity, through: :<%= user_activity_class.underscore.pluralize %>
+class <%= notification_batch_class %> < ActiveRecord::Base
+  has_many :<%= notification_class.underscore.pluralize %>
+  has_many :<%= activity_class.underscore.pluralize %>, after_add: :update_last_activity, through: :<%= notification_class.underscore.pluralize %>
 
   belongs_to :receiver, class_name: '<%= user_class %>'
 
