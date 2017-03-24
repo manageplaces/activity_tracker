@@ -46,6 +46,9 @@ class NotificationSetting < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
+  def to_s
+    name
+  end
 end
 
 class Task < ActiveRecord::Base

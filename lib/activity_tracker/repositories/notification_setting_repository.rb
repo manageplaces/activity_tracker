@@ -16,6 +16,13 @@ module ActivityTracker
       notification_setting.save
     end
 
+    def get(user, activity_type)
+      @klass.where(
+        user: user,
+        activity_type: activity_type
+      ).first
+    end
+
     def all
       @klass.all
     end

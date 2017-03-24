@@ -9,6 +9,7 @@ module ActivityTracker
 
       @activity_repository = ActivityRepository.new
       @notification_batch_repository = NotificationBatchRepository.new
+      @notification_setting_repository = NotificationSettingRepository.new
 
       @collected_activities = []
     end
@@ -67,12 +68,15 @@ module ActivityTracker
 
         activity_params = @options.merge(activity_params)
 
-        if type_obj.level == ActivityTracker::NotificationLevels::DISABLED
-          receivers = []
-        end
-
         if type_obj.skip_sender && activity_params[:sender] && !receivers.try(:count).zero?
           receivers.reject! { |r| r.id == activity_params[:sender].id }
+        end
+
+        receivers.reject! do |r|
+          level = @notification_setting_repository.get(r, type_string).try(:level)
+          level ||= type_obj.level
+
+          level == NotificationLevels::DISABLED
         end
 
         @collected_activities << [

@@ -7,6 +7,7 @@ describe ActivityTracker.batch do
 
   let(:user1) { create :user }
   let(:user2) { create :user }
+  let(:user3) { create :user }
 
   let(:task) { create :task }
 
@@ -132,6 +133,35 @@ describe ActivityTracker.batch do
       end
 
       expect(NotificationBatch.all.count).to eq(0)
+    end
+  end
+
+  describe 'user level notification levels' do
+    it 'is possible to enable by overriding' do
+      create :notification_setting, activity_type: :disabled_notifications, user: user1
+      create :notification_setting, activity_type: :disabled_notifications, user: user2, level: ActivityTracker::NotificationLevels::DISABLED
+
+      ActivityTracker.batch do
+        users = [user1, user2, user3]
+        task.instance_eval { track_activity(users, :disabled_notifications) }
+      end
+
+      expect(NotificationBatch.all.count).to eq(1)
+      expect(NotificationBatch.all.first.receiver_id).to eq(user1.id)
+    end
+
+    it 'is possible to enable by overriding' do
+      create :notification_setting, user: user1
+      create :notification_setting, user: user2, level: ActivityTracker::NotificationLevels::DISABLED
+
+      ActivityTracker.batch do
+        users = [user1, user2, user3]
+        task.instance_eval { track_activity(users, :type1) }
+      end
+
+      expect(NotificationBatch.all.count).to eq(2)
+      expect(NotificationBatch.all.first.receiver_id).to eq(user1.id)
+      expect(NotificationBatch.all.second.receiver_id).to eq(user3.id)
     end
   end
 end
