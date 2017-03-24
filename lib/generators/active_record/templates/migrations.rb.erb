@@ -12,7 +12,7 @@ class ActivityTrackerModels < ActiveRecord::Migration
     create_table(:<%= activity_class.underscore.pluralize %>) do |t|
       t.string :activity_type, required: true, null: false
       t.integer :sender_id
-      t.references :subject, polymorphic: true
+      t.references :scope, polymorphic: true
       t.datetime :created_at, null: false, required: true
       t.text :metadata
     end

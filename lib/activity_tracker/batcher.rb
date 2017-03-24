@@ -62,7 +62,7 @@ module ActivityTracker
         type_string = activity_params[:activity_type]
         type_obj = ActivityTypeRepository.instance.get(type_string)
 
-        next if receivers.try(:count).try(:zero?) && !activity_params[:subject]
+        next if receivers.try(:count).try(:zero?) && !activity_params[:scope]
         next if type_filtered?(type_string)
 
         activity_params = @options.merge(activity_params)

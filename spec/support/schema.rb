@@ -24,7 +24,7 @@ ActiveRecord::Schema.define do
   create_table :activities do |t|
     t.string :activity_type, required: true, null: false
     t.integer :sender_id, index: true
-    t.references :subject, polymorphic: true
+    t.references :scope, polymorphic: true
     t.datetime :created_at, null: false, required: true
     t.text :metadata
   end

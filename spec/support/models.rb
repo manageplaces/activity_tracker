@@ -23,7 +23,7 @@ class Activity < ActiveRecord::Base
   has_many :notification_batches, through: :notifications
 
   belongs_to :sender, class_name: 'User'
-  belongs_to :subject, polymorphic: true
+  belongs_to :scope, polymorphic: true
 
   validates_presence_of :activity_type
 

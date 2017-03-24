@@ -3,5 +3,5 @@ class <%= activity_class %> < ActiveRecord::Base
   has_many :<%= notification_batch_class.underscore.pluralize %>, through: :<%= notification_class.underscore.pluralize %>
 
   belongs_to :sender, class_name: '<%= user_class %>'
-  belongs_to :subject, polymorphic: true
+  belongs_to :scope, polymorphic: true
 end
