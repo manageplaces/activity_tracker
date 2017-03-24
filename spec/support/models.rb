@@ -37,6 +37,14 @@ class Notification < ActiveRecord::Base
   belongs_to :notification_batch
 end
 
+class NotificationSetting < ActiveRecord::Base
+  belongs_to :user
+
+  validates_inclusion_of :level, in: ActivityTracker::NotificationLevels::TYPES
+  validates_presence_of :activity_type, :level, :user
+  validates_uniqueness_of :activity_type, scope: :user_id
+end
+
 class User < ActiveRecord::Base
 end
 

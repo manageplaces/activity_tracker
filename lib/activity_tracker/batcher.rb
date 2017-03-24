@@ -67,6 +67,10 @@ module ActivityTracker
 
         activity_params = @options.merge(activity_params)
 
+        if type_obj.level == ActivityTracker::NotificationLevels::DISABLED
+          receivers = []
+        end
+
         if type_obj.skip_sender && activity_params[:sender] && !receivers.try(:count).zero?
           receivers.reject! { |r| r.id == activity_params[:sender].id }
         end

@@ -3,6 +3,7 @@ module ActivityTracker
     def initialize(params = {}, &block)
       @batchable = true
       @skip_sender = true
+      @level = NotificationLevels::EMAIL
 
       params.each do |key, value|
         instance_variable_set("@#{key}", value)
@@ -23,7 +24,7 @@ module ActivityTracker
 
     [
       :metadata_fields, :to_text, :to_html, :batchable,
-      :skip_sender
+      :skip_sender, :level
     ].each do |field|
       define_method field do |val = nil, &block|
         var_name = "@#{field}"

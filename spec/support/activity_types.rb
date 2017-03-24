@@ -17,3 +17,8 @@ ActivityTracker.define_activity do
   name 'no_skip_sender_type_1'
   skip_sender false
 end
+
+ActivityTracker.define_activity do
+  name 'disabled_notifications'
+  level ActivityTracker::NotificationLevels::DISABLED
+end

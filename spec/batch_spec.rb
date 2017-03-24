@@ -123,4 +123,15 @@ describe ActivityTracker.batch do
       expect(NotificationBatch.all.count).to eq(2)
     end
   end
+
+  describe 'notification levels' do
+    it 'skips sending notifications if disabled by default' do
+      ActivityTracker.batch do
+        users = [user1, user2]
+        task.instance_eval { track_activity(users, :disabled_notifications) }
+      end
+
+      expect(NotificationBatch.all.count).to eq(0)
+    end
+  end
 end

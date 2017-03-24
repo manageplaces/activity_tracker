@@ -2,11 +2,13 @@ require 'activity_tracker/railtie' if defined?(Rails)
 
 require 'activity_tracker/configuration'
 
+require 'activity_tracker/notification_levels'
 require 'activity_tracker/models/activity_type'
 
 require 'activity_tracker/repositories/activity_repository'
 require 'activity_tracker/repositories/activity_type_repository'
 require 'activity_tracker/repositories/notification_batch_repository'
+require 'activity_tracker/repositories/notification_setting_repository'
 require 'activity_tracker/repositories/collector_repository'
 
 require 'activity_tracker/batch'

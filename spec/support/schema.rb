@@ -14,7 +14,7 @@ ActiveRecord::Schema.define do
   end
 
   create_table :notification_batches do |t|
-    t.integer :receiver_id, null: false, required: true, index: true
+    t.belongs_to :receiver, null: false, required: true, index: true, foreign_key: true, on_delete: :cascade
     t.datetime :created_at, null: false, required: true
     t.timestamp :last_activity, required: true, null: false
     t.boolean :is_closed, required: true, null: false, default: false
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define do
 
   create_table :activities do |t|
     t.string :activity_type, required: true, null: false
-    t.integer :sender_id, index: true
+    t.belongs_to :sender, index: true, foreign_key: true, on_delete: :nullify
     t.references :scope, polymorphic: true
     t.datetime :created_at, null: false, required: true
     t.text :metadata
@@ -35,6 +35,11 @@ ActiveRecord::Schema.define do
     t.boolean :is_read, required: true, null: false, default: false
   end
 
-  add_foreign_key :notification_batches, :users, column: :receiver_id, on_delete: :cascade
-  add_foreign_key :activities, :users, column: :sender_id, on_delete: :cascade
+  create_table :notification_settings do |t|
+    t.belongs_to :user, null: false, required: true, index: true, on_delete: :cascade
+    t.string :activity_type, required: true, null: false
+    t.integer :level, required: true, null: false, limit: 1
+  end
+
+  add_index :notification_settings, [:user_id, :activity_type], unique: true
 end

@@ -35,4 +35,16 @@ describe ActivityTracker::ActivityType do
       expect { obj.name 'test' }.to raise_exception(RuntimeError)
     end
   end
+
+  describe 'notification levels' do
+    it 'is set to email by default' do
+      obj = ActivityTracker::ActivityType.new
+      expect(obj.level).to eq(ActivityTracker::NotificationLevels::EMAIL)
+    end
+
+    it 'is possible to set other value' do
+      obj = ActivityTracker::ActivityType.new(level: ActivityTracker::NotificationLevels::DISABLED)
+      expect(obj.level).to eq(ActivityTracker::NotificationLevels::DISABLED)
+    end
+  end
 end
