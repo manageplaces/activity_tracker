@@ -19,6 +19,16 @@ ActivityTracker.define_activity do
 end
 
 ActivityTracker.define_activity do
-  name 'disabled_notifications'
+  name 'notifications_disabled'
   level ActivityTracker::NotificationLevels::DISABLED
+end
+
+ActivityTracker.define_activity do
+  name 'notifications_notification_only'
+  level ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+end
+
+ActivityTracker.define_activity do
+  name 'notifications_email'
+  level ActivityTracker::NotificationLevels::EMAIL
 end

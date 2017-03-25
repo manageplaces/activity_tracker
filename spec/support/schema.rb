@@ -33,6 +33,7 @@ ActiveRecord::Schema.define do
     t.belongs_to :activity, required: true, null: false, index: true
     t.belongs_to :notification_batch, required: true, null: false, index: true
     t.boolean :is_read, required: true, null: false, default: false
+    t.boolean :send_mail, required: true, null: false
   end
 
   create_table :notification_settings do |t|

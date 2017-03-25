@@ -72,11 +72,11 @@ module ActivityTracker
           receivers.reject! { |r| r.id == activity_params[:sender].id }
         end
 
-        receivers.reject! do |r|
+        receivers.map! do |r|
           level = @notification_setting_repository.get(r, type_string).try(:level)
           level ||= type_obj.level
 
-          level == NotificationLevels::DISABLED
+          [r, level]
         end
 
         @collected_activities << [
@@ -100,10 +100,15 @@ module ActivityTracker
         type = ActivityTypeRepository.instance.get(activity.activity_type)
         batchable = type.batchable
 
-        receivers.each do |receiver|
+        receivers.each do |receiver, level|
+          next if level == ActivityTracker::NotificationLevels::DISABLED
+
           batch = @notification_batch_repository.find_or_create(receiver.id, !batchable)
           @notification_batch_repository.add(batch)
-          activity.notifications.build(notification_batch: batch)
+          activity.notifications.build(
+            notification_batch: batch,
+            send_mail: level == ActivityTracker::NotificationLevels::EMAIL
+          )
         end
 
         @activity_repository.add(activity)

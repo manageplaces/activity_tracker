@@ -8,6 +8,7 @@ describe ActivityTracker.batch do
   let(:user1) { create :user }
   let(:user2) { create :user }
   let(:user3) { create :user }
+  let(:user4) { create :user }
 
   let(:task) { create :task }
 
@@ -129,7 +130,7 @@ describe ActivityTracker.batch do
     it 'skips sending notifications if disabled by default' do
       ActivityTracker.batch do
         users = [user1, user2]
-        task.instance_eval { track_activity(users, :disabled_notifications) }
+        task.instance_eval { track_activity(users, :notifications_disabled) }
       end
 
       expect(NotificationBatch.all.count).to eq(0)
@@ -137,31 +138,68 @@ describe ActivityTracker.batch do
   end
 
   describe 'user level notification levels' do
-    it 'is possible to enable by overriding' do
-      create :notification_setting, activity_type: :disabled_notifications, user: user1
-      create :notification_setting, activity_type: :disabled_notifications, user: user2, level: ActivityTracker::NotificationLevels::DISABLED
+    specify 'when default actiivty level is disabled' do
+      create :notification_setting, activity_type: :notifications_disabled, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
+      create :notification_setting, activity_type: :notifications_disabled, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      create :notification_setting, activity_type: :notifications_disabled, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
 
       ActivityTracker.batch do
-        users = [user1, user2, user3]
-        task.instance_eval { track_activity(users, :disabled_notifications) }
+        users = [user1, user2, user3, user4]
+        task.instance_eval { track_activity(users, :notifications_disabled) }
       end
 
-      expect(NotificationBatch.all.count).to eq(1)
-      expect(NotificationBatch.all.first.receiver_id).to eq(user1.id)
+      notification_batches = NotificationBatch.all
+      notifications = Notification.all
+
+      expect(notification_batches.count).to eq(2)
+      expect(notification_batches.first.receiver_id).to eq(user2.id)
+      expect(notification_batches.second.receiver_id).to eq(user3.id)
+      expect(notifications.first.send_mail).to eq(false)
+      expect(notifications.second.send_mail).to eq(true)
     end
 
-    it 'is possible to enable by overriding' do
-      create :notification_setting, user: user1
-      create :notification_setting, user: user2, level: ActivityTracker::NotificationLevels::DISABLED
+    specify 'when default actiivty level is notifications only' do
+      create :notification_setting, activity_type: :notifications_notification_only, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
+      create :notification_setting, activity_type: :notifications_notification_only, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      create :notification_setting, activity_type: :notifications_notification_only, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
 
       ActivityTracker.batch do
-        users = [user1, user2, user3]
-        task.instance_eval { track_activity(users, :type1) }
+        users = [user1, user2, user3, user4]
+        task.instance_eval { track_activity(users, :notifications_notification_only) }
       end
 
-      expect(NotificationBatch.all.count).to eq(2)
-      expect(NotificationBatch.all.first.receiver_id).to eq(user1.id)
-      expect(NotificationBatch.all.second.receiver_id).to eq(user3.id)
+      notification_batches = NotificationBatch.all
+      notifications = Notification.all
+
+      expect(notification_batches.count).to eq(3)
+      expect(notification_batches.first.receiver_id).to eq(user2.id)
+      expect(notification_batches.second.receiver_id).to eq(user3.id)
+      expect(notification_batches.third.receiver_id).to eq(user4.id)
+      expect(notifications.first.send_mail).to eq(false)
+      expect(notifications.second.send_mail).to eq(true)
+      expect(notifications.third.send_mail).to eq(false)
+    end
+
+    specify 'when default actiivty level is email' do
+      create :notification_setting, activity_type: :notifications_email, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
+      create :notification_setting, activity_type: :notifications_email, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      create :notification_setting, activity_type: :notifications_email, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
+
+      ActivityTracker.batch do
+        users = [user1, user2, user3, user4]
+        task.instance_eval { track_activity(users, :notifications_email) }
+      end
+
+      notification_batches = NotificationBatch.all
+      notifications = Notification.all
+
+      expect(notification_batches.count).to eq(3)
+      expect(notification_batches.first.receiver_id).to eq(user2.id)
+      expect(notification_batches.second.receiver_id).to eq(user3.id)
+      expect(notification_batches.third.receiver_id).to eq(user4.id)
+      expect(notifications.first.send_mail).to eq(false)
+      expect(notifications.second.send_mail).to eq(true)
+      expect(notifications.third.send_mail).to eq(true)
     end
   end
 end
