@@ -11,6 +11,7 @@ require 'activity_tracker/repositories/notification_batch_repository'
 require 'activity_tracker/repositories/notification_setting_repository'
 require 'activity_tracker/repositories/collector_repository'
 
+require 'activity_tracker/notification_level_resolver'
 require 'activity_tracker/batch'
 require 'activity_tracker/batcher'
 require 'activity_tracker/collector'
