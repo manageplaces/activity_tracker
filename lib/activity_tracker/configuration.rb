@@ -17,7 +17,6 @@ module ActivityTracker
       @activity_class = 'Activity'
       @notification_batch_class = 'NotificationBatch'
       @notification_class = 'Notification'
-      @notification_setting_class = 'NotificationSetting'
       @user_class = 'User'
 
       @idle_time = 600

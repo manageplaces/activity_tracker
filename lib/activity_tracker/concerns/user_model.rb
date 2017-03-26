@@ -8,16 +8,15 @@ module ActivityTracker
       has_many ActivityTracker.configuration.activity_class.underscore.pluralize.to_sym, foreign_key: 'sender_id', dependent: :nullify
       has_many ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym, foreign_key: 'receiver_id', dependent: :destroy
       has_many ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym, through: ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym
-      has_many ActivityTracker.configuration.notification_setting_class.underscore.pluralize.to_sym, dependent: :destroy
+
+      store :notification_settings, coder: JSON
 
       def type
         ActivityTracker::ActivityTypeRepository.instance.get(activity_type)
       end
 
       def notification_level(activity_type)
-        @notification_setting_repository = ActivityTracker::NotificationSettingRepository.new
-        user_level = @notification_setting_repository.get(id, activity_type).try(:level)
-
+        user_level = notification_settings[activity_type]
         user_level || ActivityTracker::ActivityTypeRepository.instance.get(activity_type).level
       end
     end

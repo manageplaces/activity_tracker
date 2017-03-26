@@ -83,8 +83,26 @@ module ActivityTracker
     end
 
     def filter_receivers
-      level_resolver = NotificationLevelResolver.new(@activities)
-      @activities = level_resolver.perform.reject do |activity, receivers|
+      @activities.each do |activity, receivers|
+        type_string = activity.activity_type
+        type_obj = ActivityTypeRepository.instance.get(type_string)
+
+        if type_obj.skip_sender && activity.sender && !receivers.count.zero?
+          receivers.reject! { |r| r.id == activity.sender_id }
+        end
+
+        receivers.map! do |receiver|
+          level = receiver.notification_level(type_string)
+
+          next if level == ActivityTracker::NotificationLevels::DISABLED
+
+          [receiver, level]
+        end.compact!
+
+        [activity, receivers]
+      end
+
+      @activities.reject! do |activity, receivers|
         receivers.empty? && !activity.scope
       end
     end

@@ -37,11 +37,5 @@ ActiveRecord::Schema.define do
     t.boolean :send_mail, required: true, null: false
   end
 
-  create_table :notification_settings do |t|
-    t.belongs_to :user, null: false, required: true, index: true, on_delete: :cascade
-    t.string :activity_type, required: true, null: false
-    t.integer :level, required: true, null: false, limit: 1
-  end
-
-  add_index :notification_settings, [:user_id, :activity_type], unique: true
+  add_column :users, :notification_settings, :text
 end

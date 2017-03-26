@@ -10,10 +10,6 @@ class Notification < ActiveRecord::Base
   include ActivityTracker::NotificationModel
 end
 
-class NotificationSetting < ActiveRecord::Base
-  include ActivityTracker::NotificationSettingModel
-end
-
 class User < ActiveRecord::Base
   include ActivityTracker::UserModel
 

@@ -149,9 +149,12 @@ describe ActivityTracker.batch do
 
   describe 'user level notification levels' do
     specify 'when default actiivty level is disabled' do
-      create :notification_setting, activity_type: :notifications_disabled, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
-      create :notification_setting, activity_type: :notifications_disabled, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
-      create :notification_setting, activity_type: :notifications_disabled, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
+      user1.notification_settings[:notifications_disabled] = ActivityTracker::NotificationLevels::DISABLED
+      user2.notification_settings[:notifications_disabled] = ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      user3.notification_settings[:notifications_disabled] = ActivityTracker::NotificationLevels::EMAIL
+      user1.save
+      user2.save
+      user3.save
 
       ActivityTracker.batch do
         users = [user1, user2, user3, user4]
@@ -169,9 +172,12 @@ describe ActivityTracker.batch do
     end
 
     specify 'when default actiivty level is notifications only' do
-      create :notification_setting, activity_type: :notifications_notification_only, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
-      create :notification_setting, activity_type: :notifications_notification_only, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
-      create :notification_setting, activity_type: :notifications_notification_only, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
+      user1.notification_settings[:notifications_notification_only] = ActivityTracker::NotificationLevels::DISABLED
+      user2.notification_settings[:notifications_notification_only] = ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      user3.notification_settings[:notifications_notification_only] = ActivityTracker::NotificationLevels::EMAIL
+      user1.save
+      user2.save
+      user3.save
 
       ActivityTracker.batch do
         users = [user1, user2, user3, user4]
@@ -191,9 +197,12 @@ describe ActivityTracker.batch do
     end
 
     specify 'when default actiivty level is email' do
-      create :notification_setting, activity_type: :notifications_email, user: user1, level: ActivityTracker::NotificationLevels::DISABLED
-      create :notification_setting, activity_type: :notifications_email, user: user2, level: ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
-      create :notification_setting, activity_type: :notifications_email, user: user3, level: ActivityTracker::NotificationLevels::EMAIL
+      user1.notification_settings[:notifications_email] = ActivityTracker::NotificationLevels::DISABLED
+      user2.notification_settings[:notifications_email] = ActivityTracker::NotificationLevels::NOTIFICATION_ONLY
+      user3.notification_settings[:notifications_email] = ActivityTracker::NotificationLevels::EMAIL
+      user1.save
+      user2.save
+      user3.save
 
       ActivityTracker.batch do
         users = [user1, user2, user3, user4]
