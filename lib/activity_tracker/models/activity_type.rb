@@ -24,7 +24,7 @@ module ActivityTracker
 
     [
       :metadata_fields, :to_text, :to_html, :batchable,
-      :skip_sender, :level
+      :skip_sender, :level, :namespace, :label, :description
     ].each do |field|
       define_method field do |val = nil, &block|
         var_name = "@#{field}"

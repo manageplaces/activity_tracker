@@ -15,6 +15,8 @@ class NotificationSetting < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
+  include ActivityTracker::UserModel
+
   def to_s
     name
   end
