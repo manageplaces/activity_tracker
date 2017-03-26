@@ -5,9 +5,10 @@ module ActivityTracker
     extend ActiveSupport::Concern
 
     included do
-      has_many ActivityTracker.configuration.activity_class.underscore.pluralize.to_sym, foreign_key: 'sender_id'
-      has_many ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym, foreign_key: 'receiver_id'
+      has_many ActivityTracker.configuration.activity_class.underscore.pluralize.to_sym, foreign_key: 'sender_id', dependent: :nullify
+      has_many ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym, foreign_key: 'receiver_id', dependent: :destroy
       has_many ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym, through: ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym
+      has_many ActivityTracker.configuration.notification_setting_class.underscore.pluralize.to_sym, dependent: :destroy
 
       def type
         ActivityTracker::ActivityTypeRepository.instance.get(activity_type)
