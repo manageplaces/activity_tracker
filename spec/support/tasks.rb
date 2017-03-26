@@ -1,7 +1,7 @@
 FactoryGirl.define do
-  factory :user do
+  factory :task do
     sequence :name do |n|
-      "user_#{n}"
+      "task_#{n}"
     end
   end
 end

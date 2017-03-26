@@ -12,8 +12,6 @@ end
 
 class NotificationSetting < ActiveRecord::Base
   include ActivityTracker::NotificationSettingModel
-
-
 end
 
 class User < ActiveRecord::Base

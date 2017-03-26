@@ -11,7 +11,7 @@ module ActivityTracker
       belongs_to :sender, class_name: ActivityTracker.configuration.user_class
       belongs_to :scope, polymorphic: true
 
-      validates_presence_of :activity_type
+      validates_presence_of :activity_type, :scope
 
       def type
         activity_type ? ::ActivityTracker::ActivityTypeRepository.get(activity_type) : nil

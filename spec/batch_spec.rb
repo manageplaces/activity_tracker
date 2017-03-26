@@ -69,10 +69,15 @@ describe ActivityTracker.batch do
       end
 
       activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
       activity = activities.first
 
-      expect(activities.count).to eq(1)
-      expect(activity.activity_type.to_sym).to eq(:type1)
+      expect(activities.count).to eq(2)
+      expect(activities_hidden.count).to eq(1)
+      expect(activities.first.activity_type.to_sym).to eq(:type1)
+      expect(activities.first.is_hidden).to eq(false)
+      expect(activities.second.activity_type.to_sym).to eq(:type2)
+      expect(activities.second.is_hidden).to eq(true)
     end
 
     it 'skips the :without specified activities' do
@@ -85,10 +90,15 @@ describe ActivityTracker.batch do
       end
 
       activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
       activity = activities.first
 
-      expect(activities.count).to eq(1)
-      expect(activity.activity_type.to_sym).to eq(:type2)
+      expect(activities.count).to eq(2)
+      expect(activities_hidden.count).to eq(1)
+      expect(activities.first.activity_type.to_sym).to eq(:type1)
+      expect(activities.first.is_hidden).to eq(true)
+      expect(activities.second.activity_type.to_sym).to eq(:type2)
+      expect(activities.second.is_hidden).to eq(false)
     end
   end
 

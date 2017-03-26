@@ -56,11 +56,15 @@ module ActivityTracker
     end
 
     def filter_by_activity_type
-      @activity_params = @collector.activities.to_a.reject do |activity_params|
+      @activity_params = @collector.activities.to_a.map do |activity_params|
         activity_type = activity_params[:activity_type]
 
-        (@only && !@only.include?(activity_type)) ||
-          (@without && @without.include?(activity_type))
+        if (@only && !@only.include?(activity_type)) || (@without && @without.include?(activity_type))
+          activity_params[:receivers] = []
+          activity_params[:is_hidden] = true
+        end
+
+        activity_params
       end
     end
 
@@ -81,7 +85,7 @@ module ActivityTracker
     def filter_receivers
       level_resolver = NotificationLevelResolver.new(@activities)
       @activities = level_resolver.perform.reject do |activity, receivers|
-        receivers.empty? && activity.scope
+        receivers.empty? && !activity.scope
       end
     end
 
