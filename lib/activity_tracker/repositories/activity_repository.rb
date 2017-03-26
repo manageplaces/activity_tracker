@@ -13,7 +13,7 @@ module ActivityTracker
     def add(activity)
       raise ArgumentError unless activity.is_a?(@klass)
 
-      activity.save
+      activity.save!
     end
 
     def all

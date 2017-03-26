@@ -31,7 +31,7 @@ module ActivityTracker
     def add(notification_batch)
       raise ArgumentError unless notification_batch.is_a?(@klass)
 
-      notification_batch.save
+      notification_batch.save!
     end
 
     def all

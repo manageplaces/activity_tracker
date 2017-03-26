@@ -13,7 +13,7 @@ module ActivityTracker
     def add(notification_setting)
       raise ArgumentError unless notification_setting.is_a?(@klass)
 
-      notification_setting.save
+      notification_setting.save!
     end
 
     def get_for_user_ids(user_ids, activity_type)
