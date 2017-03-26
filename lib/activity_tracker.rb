@@ -16,8 +16,12 @@ require 'activity_tracker/batch'
 require 'activity_tracker/batcher'
 require 'activity_tracker/collector'
 
+require 'activity_tracker/concerns/has_activities'
+require 'activity_tracker/concerns/activity_model'
+require 'activity_tracker/concerns/notification_model'
+require 'activity_tracker/concerns/notification_batch_model'
+require 'activity_tracker/concerns/notification_setting_model'
 require 'activity_tracker/track_activity'
-require 'activity_tracker/has_activities'
 require 'activity_tracker/define_activity'
 
 require 'activity_tracker/version'
