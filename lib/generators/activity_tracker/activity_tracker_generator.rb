@@ -20,6 +20,11 @@ module ActivityTracker
                default: 'Notification',
                banner: 'Notification class name'
 
+      argument :notification_setting_class,
+               type: :string,
+               default: 'NotificationSetting',
+               banner: 'NotificationSetting class name'
+
       argument :user_class,
                type: :string,
                default: 'User',
@@ -33,6 +38,7 @@ module ActivityTracker
           activity_class,
           notification_batch_class,
           notification_class,
+          notification_setting_class,
           user_class
         ]
       end

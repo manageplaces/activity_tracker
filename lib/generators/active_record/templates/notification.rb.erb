@@ -1,4 +1,3 @@
 class <%= notification_class %> < ActiveRecord::Base
-  belongs_to :<%= notification_batch_class.underscore %>
-  belongs_to :<%= activity_class.underscore %>
+  include ActivityTracker::NotificationModel
 end

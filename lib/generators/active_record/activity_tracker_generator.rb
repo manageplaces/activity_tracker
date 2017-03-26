@@ -21,6 +21,11 @@ module ActiveRecord
                default: 'Notification',
                banner: 'Notification class name'
 
+      argument :notification_setting_class,
+               type: :string,
+               default: 'NotificationSetting',
+               banner: 'NotificationSetting class name'
+
       argument :user_class,
                type: :string,
                default: 'User',
@@ -34,8 +39,12 @@ module ActiveRecord
         template 'notification_batch.rb.erb', notification_batch_model_path
       end
 
-      def notification_model
+      def generate_notification_model
         template 'notification.rb.erb', notification_model_path
+      end
+
+      def generate_notification_setting_model
+        template 'notification_setting.rb.erb', notification_setting_model_path
       end
 
       def create_migrations
@@ -61,6 +70,14 @@ module ActiveRecord
           'app',
           'models',
           "#{notification_class.underscore.downcase}.rb"
+        )
+      end
+
+      def notification_setting_model_path
+        File.join(
+          'app',
+          'models',
+          "#{notification_setting_class.underscore.downcase}.rb"
         )
       end
 
