@@ -4,6 +4,10 @@ module ActivityTracker
     NOTIFICATION_ONLY = 1
     EMAIL = 2
 
-    TYPES = [DISABLED, NOTIFICATION_ONLY, EMAIL].freeze
+    VALUES = {
+      DISABLED => 'Disabled',
+      NOTIFICATION_ONLY => 'Notification only',
+      EMAIL => 'E-mail and notification'
+    }.freeze
   end
 end

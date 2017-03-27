@@ -11,6 +11,8 @@ module ActivityTracker
 
       store :notification_settings, coder: JSON
 
+      before_save :cleanup_notification_settings
+
       def type
         ActivityTracker::ActivityTypeRepository.instance.get(activity_type)
       end
@@ -19,6 +21,15 @@ module ActivityTracker
         user_level = notification_settings[activity_type]
         user_level || ActivityTracker::ActivityTypeRepository.instance.get(activity_type).level
       end
+
+      protected
+
+      def cleanup_notification_settings
+        notification_settings.each do |k, v|
+          self.notification_settings[k] = v.to_i
+        end
+      end
+
     end
   end
 end
