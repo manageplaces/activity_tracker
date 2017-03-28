@@ -22,6 +22,8 @@ module ActivityTracker
       begin
         @block.call
 
+        load_from_collector
+        filter_by_scope
         filter_by_activity_type
         build_activities
         filter_receivers
@@ -52,11 +54,34 @@ module ActivityTracker
         @without = without.is_a?(Array) ? without : [without]
       end
 
+      if @options.include?(:scope_filter)
+        scope_filter = @options.delete(:scope_filter)
+
+        @scope_filter = scope_filter.is_a?(Array) ? scope_filter : [scope_filter]
+      end
+
       raise ArgumentError if @only && @without
     end
 
+    def load_from_collector
+      @activity_params = @collector.activities.to_a
+    end
+
+    def filter_by_scope
+      return unless @scope_filter
+
+      @activity_params.map! do |activity_params|
+        unless @scope_filter.include?(activity_params[:scope])
+          activity_params[:receivers] = []
+          activity_params[:is_hidden] = true
+        end
+
+        activity_params
+      end
+    end
+
     def filter_by_activity_type
-      @activity_params = @collector.activities.to_a.map do |activity_params|
+      @activity_params.map! do |activity_params|
         activity_type = activity_params[:activity_type]
 
         if (@only && !@only.include?(activity_type)) || (@without && @without.include?(activity_type))

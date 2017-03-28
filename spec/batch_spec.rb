@@ -11,6 +11,8 @@ describe ActivityTracker.batch do
   let(:user4) { create :user }
 
   let(:task) { create :task }
+  let(:task2) { create :task }
+  let(:task3) { create :task }
 
   specify 'when batch called without any activities' do
     ActivityTracker.batch { 2 + 2 }
@@ -133,6 +135,42 @@ describe ActivityTracker.batch do
       end
 
       expect(NotificationBatch.all.count).to eq(2)
+    end
+  end
+
+  describe 'scope filters' do
+    it 'skips skips scopes' do
+      ActivityTracker.batch(sender: user1, scope_filter: task) do
+        users = [user2, user3]
+
+        task.instance_eval { track_activity(users.dup, :type1, scope: self) }
+        task2.instance_eval { track_activity(users.dup, :type1, scope: self) }
+        task3.instance_eval { track_activity(users.dup, :type1, scope: self) }
+      end
+
+      activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
+
+      expect(activities.count).to eq(3)
+      expect(activities_hidden.count).to eq(2)
+      expect(Notification.all.select { |n| n.activity.scope != task }.count).to eq(0)
+    end
+
+    it 'skips skips scopes when array passed' do
+      ActivityTracker.batch(sender: user1, scope_filter: [task, task2]) do
+        users = [user2, user3]
+
+        task.instance_eval { track_activity(users.dup, :type1, scope: self) }
+        task2.instance_eval { track_activity(users.dup, :type1, scope: self) }
+        task3.instance_eval { track_activity(users.dup, :type1, scope: self) }
+      end
+
+      activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
+
+      expect(activities.count).to eq(3)
+      expect(activities_hidden.count).to eq(1)
+      expect(Notification.all.select { |n| n.activity.scope == task3 }.count).to eq(0)
     end
   end
 
