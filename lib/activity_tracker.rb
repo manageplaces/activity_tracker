@@ -10,6 +10,8 @@ require 'activity_tracker/repositories/activity_type_repository'
 require 'activity_tracker/repositories/notification_batch_repository'
 require 'activity_tracker/repositories/collector_repository'
 
+require 'activity_tracker/activity_filter'
+
 require 'activity_tracker/batch'
 require 'activity_tracker/batcher'
 require 'activity_tracker/collector'

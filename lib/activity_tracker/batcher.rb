@@ -45,13 +45,13 @@ module ActivityTracker
       if @options.include?(:only)
         only = @options.delete(:only)
 
-        @only = only.is_a?(Array) ? only : [only]
+        @only = ActivityFilter.new(only)
       end
 
       if @options.include?(:without)
         without = @options.delete(:without)
 
-        @without = without.is_a?(Array) ? without : [without]
+        @without = ActivityFilter.new(without)
       end
 
       if @options.include?(:scope_filter)
@@ -82,9 +82,7 @@ module ActivityTracker
 
     def filter_by_activity_type
       @activity_params.map! do |activity_params|
-        activity_type = activity_params[:activity_type]
-
-        if (@only && !@only.include?(activity_type)) || (@without && @without.include?(activity_type))
+        if (@only && !@only.match?(activity_params)) || (@without && @without.match?(activity_params))
           activity_params[:receivers] = []
           activity_params[:is_hidden] = true
         end

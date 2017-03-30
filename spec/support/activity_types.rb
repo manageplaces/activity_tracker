@@ -9,6 +9,10 @@ ActivityTracker.define_activity do
 end
 
 ActivityTracker.define_activity do
+  name 'type3'
+end
+
+ActivityTracker.define_activity do
   name 'unbatchable_type_1'
   batchable false
 end
