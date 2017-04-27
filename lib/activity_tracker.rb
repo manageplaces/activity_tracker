@@ -24,6 +24,7 @@ require 'activity_tracker/concerns/user_model'
 
 require 'activity_tracker/track_activity'
 require 'activity_tracker/define_activity'
+require 'activity_tracker/notification_batch_sender'
 
 require 'activity_tracker/version'
 

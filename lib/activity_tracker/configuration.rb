@@ -11,7 +11,7 @@ module ActivityTracker
   class Configuration
     attr_accessor :activity_class, :notification_batch_class,
                   :notification_class, :notification_setting_class,
-                  :user_class, :idle_time, :lifetime
+                  :user_class, :idle_time, :lifetime, :default_mailer
 
     def initialize
       @activity_class = 'Activity'
