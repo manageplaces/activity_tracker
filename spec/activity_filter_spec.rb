@@ -64,8 +64,9 @@ describe ActivityTracker::ActivityFilter do
   it 'filters by :activity_type if passed a single type' do
     filter1 = ActivityTracker::ActivityFilter.new(:type1)
     filter2 = ActivityTracker::ActivityFilter.new([:type1])
+    filter3 = ActivityTracker::ActivityFilter.new('type1')
 
-    [filter1, filter2].each do |filter|
+    [filter1, filter2, filter3].each do |filter|
       expect(filter.match?(type1_activity)).to eq(true)
       expect(filter.match?(type2_activity)).to eq(false)
       expect(filter.match?(type3_activity)).to eq(false)
