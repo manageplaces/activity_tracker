@@ -18,6 +18,14 @@ describe ActivityTracker::ActivityRepository do
     end
   end
 
+  describe '#factory' do
+    it 'returns the right object types' do
+      activity = instance.factory(activity_type: 'type1')
+      expect(activity).to be_a(Activity)
+      expect(activity.type).to be_a(ActivityTracker::ActivityType)
+    end
+  end
+
   describe '#all' do
     it 'returns no objects if empty' do
       expect(instance.all.count).to eq(0)
