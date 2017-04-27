@@ -15,6 +15,14 @@ module ActivityTracker
 
       before_validation :update_last_activity
 
+      def can_be_ammended?
+        !(
+          is_closed ||
+          created_at > (Time.zone.now - ActivityTracker.configuration.lifetime.seconds) ||
+          last_activity > (Time.zone.now - ActivityTracker.configuration.idle_time.seconds)
+        )
+      end
+
       protected
 
       def update_last_activity(_activity = nil)

@@ -7,19 +7,27 @@ module ActivityTracker
     end
 
     def process
-      unless @notification_batch.is_closed && !@notification_batch.is_sent
-        return false
-      end
+      return false if @notification_batch.is_sent
+      return false if @notification_batch.can_be_ammended?
 
       @notifications = @notification_batch.notifications.select(&:send_mail)
-      return false if @notifications.count == 0
 
-      @mailer_lambda.call(@notification_batch.receiver, @notifications)
+      unless @notifications.count.zero?
+        @mailer_lambda.call(@notification_batch.receiver, @notifications)
+      end
+
+      set_as_sent
+
+      true
+    end
+
+    protected
+
+    def set_as_sent
+      return if @notification_batch.is_sent
 
       @notification_batch.is_sent = true
       @notification_batch.save
-
-      true
     end
   end
 end
