@@ -27,7 +27,7 @@ module ActivityTracker
 
       def update_last_activity(_activity = nil)
         self.last_activity = [
-          _activity.try(:created_at), last_activity].compact.max || DateTime.now
+          _activity.try(:created_at), last_activity].compact.max || Time.zone.now
       end
     end
   end

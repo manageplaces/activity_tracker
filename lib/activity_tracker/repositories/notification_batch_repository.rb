@@ -23,8 +23,8 @@ module ActivityTracker
       @klass.where(
         'receiver_id = ? AND (created_at > ? or last_activity > ?)',
         user_id,
-        DateTime.now - ActivityTracker.configuration.lifetime.seconds,
-        DateTime.now - ActivityTracker.configuration.idle_time.seconds
+        Time.zone.now - ActivityTracker.configuration.lifetime.seconds,
+        Time.zone.now - ActivityTracker.configuration.idle_time.seconds
       ).order('last_activity desc').first || create(user_id, is_closed)
     end
 

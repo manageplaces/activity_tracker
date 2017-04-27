@@ -8,3 +8,5 @@ require 'support/db'
 
 require 'support/factory_girl'
 require 'support/database_cleaner'
+
+Time.zone = 'UTC'
