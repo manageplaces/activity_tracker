@@ -13,10 +13,6 @@ module ActivityTracker
 
       before_save :cleanup_notification_settings
 
-      def type
-        ActivityTracker::ActivityTypeRepository.instance.get(activity_type)
-      end
-
       def notification_level(activity_type)
         user_level = notification_settings[activity_type]
         user_level || ActivityTracker::ActivityTypeRepository.instance.get(activity_type).level
