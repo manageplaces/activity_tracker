@@ -45,13 +45,30 @@ module ActivityTracker
       if @options.include?(:only)
         only = @options.delete(:only)
 
-        @only = ActivityFilter.new(only)
+        @activities_only = ActivityFilter.new(only)
       end
 
       if @options.include?(:without)
         without = @options.delete(:without)
 
-        @without = ActivityFilter.new(without)
+        @activities_without = ActivityFilter.new(without)
+      end
+
+      if @options.include?(:notifications)
+        notifications_options = @options.delete(:notifications)
+
+        if notifications_options.include?(:only)
+          only = notifications_options[:only]
+
+          @notifications_only = ActivityFilter.new(only)
+        end
+
+        if notifications_options.include?(:without)
+          without = notifications_options[:without]
+
+          @notifications_without = ActivityFilter.new(without)
+        end
+
       end
 
       if @options.include?(:scope_filter)
@@ -60,7 +77,8 @@ module ActivityTracker
         @scope_filter = scope_filter.is_a?(Array) ? scope_filter : [scope_filter]
       end
 
-      raise ArgumentError if @only && @without
+      raise ArgumentError if @activities_only && @activities_without
+      raise ArgumentError if @notifications_only && @notifications_without
     end
 
     def load_from_collector
@@ -81,8 +99,14 @@ module ActivityTracker
     end
 
     def filter_by_activity_type
+      @activity_params.reject! do |activity_params|
+        (@activities_only && !@activities_only.match?(activity_params)) ||
+            (@activities_without && @activities_without.match?(activity_params))
+      end
+
       @activity_params.map! do |activity_params|
-        if (@only && !@only.match?(activity_params)) || (@without && @without.match?(activity_params))
+        if (@notifications_only && !@notifications_only.match?(activity_params)) ||
+            (@notifications_without && @notifications_without.match?(activity_params))
           activity_params[:receivers] = []
           activity_params[:is_hidden] = true
         end

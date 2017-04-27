@@ -54,7 +54,7 @@ describe ActivityTracker.batch do
     expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
   end
 
-  describe 'type filters' do
+  describe 'type filters - activities' do
     specify 'when batch called with both :only and :without params' do
       expect do
         ActivityTracker.batch(only: [:type1], without: [:type2])
@@ -74,12 +74,10 @@ describe ActivityTracker.batch do
       activities_hidden = Activity.where(is_hidden: true)
       activity = activities.first
 
-      expect(activities.count).to eq(2)
-      expect(activities_hidden.count).to eq(1)
+      expect(activities.count).to eq(1)
+      expect(activities_hidden.count).to eq(0)
       expect(activities.first.activity_type.to_sym).to eq(:type1)
       expect(activities.first.is_hidden).to eq(false)
-      expect(activities.second.activity_type.to_sym).to eq(:type2)
-      expect(activities.second.is_hidden).to eq(true)
     end
 
     it 'skips the :without specified activities' do
@@ -95,12 +93,10 @@ describe ActivityTracker.batch do
       activities_hidden = Activity.where(is_hidden: true)
       activity = activities.first
 
-      expect(activities.count).to eq(2)
-      expect(activities_hidden.count).to eq(1)
-      expect(activities.first.activity_type.to_sym).to eq(:type1)
-      expect(activities.first.is_hidden).to eq(true)
-      expect(activities.second.activity_type.to_sym).to eq(:type2)
-      expect(activities.second.is_hidden).to eq(false)
+      expect(activities.count).to eq(1)
+      expect(activities_hidden.count).to eq(0)
+      expect(activities.first.activity_type.to_sym).to eq(:type2)
+      expect(activities.first.is_hidden).to eq(false)
     end
   end
 
@@ -171,6 +167,56 @@ describe ActivityTracker.batch do
       expect(activities.count).to eq(3)
       expect(activities_hidden.count).to eq(1)
       expect(Notification.all.select { |n| n.activity.scope == task3 }.count).to eq(0)
+    end
+  end
+
+  describe 'type filters - notifications' do
+    specify 'when batch called with both :only and :without params' do
+      expect do
+        ActivityTracker.batch(notifications: { only: [:type1], without: [:type2] })
+      end.to raise_error(ArgumentError)
+    end
+
+    it 'skips all activities except the :only ones' do
+      user1.id
+
+      ActivityTracker.batch(sender: user2, notifications: { only: [:type1] }) do
+        user = user1
+        task.instance_eval { track_activity(user, :type1) }
+        task.instance_eval { track_activity(user, :type2) }
+      end
+
+      activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
+      activity = activities.first
+
+      expect(activities.count).to eq(2)
+      expect(activities_hidden.count).to eq(1)
+      expect(activities.first.activity_type.to_sym).to eq(:type1)
+      expect(activities.first.is_hidden).to eq(false)
+      expect(activities.second.activity_type.to_sym).to eq(:type2)
+      expect(activities.second.is_hidden).to eq(true)
+    end
+
+    it 'skips the :without specified activities' do
+      user1.id
+
+      ActivityTracker.batch(sender: user2, notifications: { without: [:type1] }) do
+        user = user1
+        task.instance_eval { track_activity(user, :type1) }
+        task.instance_eval { track_activity(user, :type2) }
+      end
+
+      activities = Activity.all
+      activities_hidden = Activity.where(is_hidden: true)
+      activity = activities.first
+
+      expect(activities.count).to eq(2)
+      expect(activities_hidden.count).to eq(1)
+      expect(activities.first.activity_type.to_sym).to eq(:type1)
+      expect(activities.first.is_hidden).to eq(true)
+      expect(activities.second.activity_type.to_sym).to eq(:type2)
+      expect(activities.second.is_hidden).to eq(false)
     end
   end
 
