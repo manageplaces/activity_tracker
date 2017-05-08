@@ -12,6 +12,8 @@ module ActivityTracker
 
       @activity_params = []
       @activities = []
+
+      @unbatchable = []
     end
 
     def process
@@ -28,6 +30,8 @@ module ActivityTracker
         build_activities
         filter_receivers
         insert_activities
+
+        send_unbatchable
       rescue StandardError => e
         # :nocov:
         raise e
@@ -170,9 +174,19 @@ module ActivityTracker
             notification_batch: batch,
             send_mail: level == ActivityTracker::NotificationLevels::EMAIL
           )
+
+          @unbatchable << batch unless batchable
         end
 
         @activity_repository.add(activity)
+      end
+    end
+
+    def send_unbatchable
+      @unbatchable.each do |batch|
+        ns = NotificationBatchSender.new(batch)
+
+        ns.process
       end
     end
   end

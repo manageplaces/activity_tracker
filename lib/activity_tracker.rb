@@ -26,6 +26,8 @@ require 'activity_tracker/track_activity'
 require 'activity_tracker/define_activity'
 require 'activity_tracker/notification_batch_sender'
 
+require 'tasks.rb' if defined?(Rails)
+
 require 'activity_tracker/version'
 
 module ActivityTracker

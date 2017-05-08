@@ -1,9 +1,23 @@
 require 'spec_helper'
 
+probe = []
+
+def reset_probe
+  probe = []
+end
+
 describe ActivityTracker.batch do
-  before :all do
+  before(:all) do
     load File.dirname(__FILE__) + '/support/activity_types.rb'
+
+    ActivityTracker.configure do |c|
+      c.default_mailer = lambda do |user, activities|
+        probe << [user, activities]
+      end
+    end
   end
+
+  before(:each) { reset_probe }
 
   let(:user1) { create :user }
   let(:user2) { create :user }
@@ -52,6 +66,7 @@ describe ActivityTracker.batch do
     expect(activity.sender).to eq(user2)
     expect(activity.notification_batches.count).to eq(1)
     expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
+    expect(probe.count).to eq(0)
   end
 
   describe 'type filters - activities' do
@@ -76,8 +91,8 @@ describe ActivityTracker.batch do
 
       expect(activities.count).to eq(1)
       expect(activities_hidden.count).to eq(0)
-      expect(activities.first.activity_type.to_sym).to eq(:type1)
-      expect(activities.first.is_hidden).to eq(false)
+      expect(activity.activity_type.to_sym).to eq(:type1)
+      expect(activity.is_hidden).to eq(false)
     end
 
     it 'skips the :without specified activities' do
@@ -95,8 +110,8 @@ describe ActivityTracker.batch do
 
       expect(activities.count).to eq(1)
       expect(activities_hidden.count).to eq(0)
-      expect(activities.first.activity_type.to_sym).to eq(:type2)
-      expect(activities.first.is_hidden).to eq(false)
+      expect(activity.activity_type.to_sym).to eq(:type2)
+      expect(activity.is_hidden).to eq(false)
     end
   end
 
@@ -111,6 +126,7 @@ describe ActivityTracker.batch do
       expect(NotificationBatch.all.count).to eq(2)
       expect(NotificationBatch.where(is_closed: true).count).to eq(1)
       expect(NotificationBatch.where(is_closed: false).count).to eq(1)
+      expect(probe.count).to eq(1)
     end
   end
 
@@ -149,7 +165,9 @@ describe ActivityTracker.batch do
 
       expect(activities.count).to eq(3)
       expect(activities_hidden.count).to eq(2)
-      expect(Notification.all.select { |n| n.activity.scope != task }.count).to eq(0)
+
+      cnt = Notification.all.select { |n| n.activity.scope != task }.count
+      expect(cnt).to eq(0)
     end
 
     it 'skips skips scopes when array passed' do

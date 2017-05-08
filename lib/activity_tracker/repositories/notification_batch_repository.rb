@@ -17,6 +17,15 @@ module ActivityTracker
       )
     end
 
+    def pending_to_send
+      @klass.where(
+        'is_sent = ? AND (created_at <= ? and last_activity <= ?)',
+        false,
+        Time.zone.now - ActivityTracker.configuration.lifetime.seconds,
+        Time.zone.now - ActivityTracker.configuration.idle_time.seconds
+      )
+    end
+
     def find_or_create(user_id, is_closed = false)
       return create(user_id, true) if is_closed
 
