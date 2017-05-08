@@ -1,4 +1,3 @@
-
 require 'spec_helper'
 
 probe = []
@@ -8,7 +7,6 @@ def reset_probe
 end
 
 describe ActivityTracker::NotificationBatchSender do
-
   before(:all) do
     ActivityTracker.configure do |c|
       c.default_mailer = lambda do |user, activities|
@@ -20,6 +18,9 @@ describe ActivityTracker::NotificationBatchSender do
   before(:each) { reset_probe }
 
   let(:notification1) { build :notification }
+  let(:notification_batch_amendable) do
+    create :notification_batch, created_at: Time.zone.now, is_sent: false
+  end
   let(:notification_batch_empty) do
     create :notification_batch, :old, is_closed: true
   end
@@ -35,6 +36,16 @@ describe ActivityTracker::NotificationBatchSender do
     expect do
       ns = ActivityTracker::NotificationBatchSender.new
     end.to raise_error(ArgumentError)
+  end
+
+  specify 'when notification is not closed' do
+    ns = ActivityTracker::NotificationBatchSender.new(notification_batch_amendable)
+
+    expect(ns.process).to eq(false)
+    expect(probe.count).to eq(0)
+
+    notification_batch_single_notification.reload
+    expect(notification_batch_amendable.is_sent).to eq(false)
   end
 
   specify 'when initialised without any notifications' do

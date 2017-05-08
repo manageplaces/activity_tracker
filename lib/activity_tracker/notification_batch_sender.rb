@@ -8,7 +8,7 @@ module ActivityTracker
 
     def process
       return false if @notification_batch.is_sent
-      return false if @notification_batch.can_be_ammended?
+      return false if @notification_batch.amendable?
 
       @notifications = @notification_batch.notifications.select(&:send_mail)
 
