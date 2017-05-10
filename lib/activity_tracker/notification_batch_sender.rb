@@ -11,9 +11,10 @@ module ActivityTracker
       return false if @notification_batch.amendable?
 
       @notifications = @notification_batch.notifications.select(&:send_mail)
+      @activities = @notifications.map(&:activity).compact
 
-      unless @notifications.count.zero?
-        @mailer_lambda.call(@notification_batch.receiver, @notifications)
+      unless @activities.count.zero?
+        @mailer_lambda.call(@notification_batch.receiver, @activities)
       end
 
       set_as_sent
