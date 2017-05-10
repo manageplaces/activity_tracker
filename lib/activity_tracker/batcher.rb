@@ -10,6 +10,8 @@ module ActivityTracker
       @activity_repository = ActivityRepository.new
       @notification_batch_repository = NotificationBatchRepository.new
 
+      @receivers_filter = ActivityTracker.configuration.receivers_filter
+
       @activity_params = []
       @activities = []
 
@@ -137,6 +139,10 @@ module ActivityTracker
       @activities.each do |activity, receivers|
         type_string = activity.activity_type
         type_obj = ActivityTypeRepository.instance.get(type_string)
+
+        if @receivers_filter
+          receivers.select!(&@receivers_filter)
+        end
 
         if type_obj.skip_sender && activity.sender && !receivers.count.zero?
           receivers.reject! { |r| r.id == activity.sender_id }

@@ -6,7 +6,7 @@ def reset_probe
   probe = []
 end
 
-describe ActivityTracker.batch do
+describe 'ActivityTracker.batch' do
   before(:all) do
     load File.dirname(__FILE__) + '/support/activity_types.rb'
 
@@ -23,6 +23,7 @@ describe ActivityTracker.batch do
   let(:user2) { create :user }
   let(:user3) { create :user }
   let(:user4) { create :user }
+  let(:user_skip_notifications) { create :user, :skip_notifications }
 
   let(:task) { create :task }
   let(:task2) { create :task }
@@ -147,6 +148,34 @@ describe ActivityTracker.batch do
       end
 
       expect(NotificationBatch.all.count).to eq(2)
+    end
+  end
+
+  describe 'global receivers filter' do
+    before do
+      ActivityTracker.configure do |c|
+        c.receivers_filter = ->(user) { !user.skip_notifications }
+      end
+    end
+
+    after do
+      ActivityTracker.configure do |c|
+        c.receivers_filter = nil
+      end
+    end
+
+    it 'skips users' do
+      ActivityTracker.batch do
+        users = [user1, user_skip_notifications]
+        task.instance_eval { track_activity(users, :type1) }
+      end
+
+      activities = Activity.all
+      activity = activities.first
+
+      expect(activities.count).to eq(1)
+      expect(activity.notification_batches.count).to eq(1)
+      expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
     end
   end
 
