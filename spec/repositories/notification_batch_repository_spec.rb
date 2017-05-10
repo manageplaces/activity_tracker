@@ -39,7 +39,12 @@ describe ActivityTracker::NotificationBatchRepository do
     end
   end
 
-  describe '#find_or_create' do
+  describe '#pending_to_send' do
+    let!(:notification_batch) { create :notification_batch }
+    let!(:notification_batch_old) { create :notification_batch, :old }
 
+    it 'fetches only old ones' do
+      expect(instance.pending_to_send).to eq([notification_batch_old])
+    end
   end
 end
