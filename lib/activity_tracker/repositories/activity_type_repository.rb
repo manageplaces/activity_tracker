@@ -41,6 +41,10 @@ module ActivityTracker
       @activity_types.values
     end
 
+    def no_notifications
+      all.reject(&:no_notifications)
+    end
+
     def self.instance
       @instance ||= ActivityTypeRepository.new
     end

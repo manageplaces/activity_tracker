@@ -26,6 +26,13 @@ describe ActivityTracker::ActivityType do
     end
   end
 
+  let(:activity_type_no_notifications) do
+    ActivityTracker::ActivityType.new do
+      name 'activity_type_no_notifications'
+      no_notifications true
+    end
+  end
+
   describe '.instance' do
     it 'returns a repository object' do
       expect(@instance).to be_a(ActivityTracker::ActivityTypeRepository)
@@ -66,6 +73,20 @@ describe ActivityTracker::ActivityType do
   describe '#all' do
     it 'returns empty array if nothing added' do
       expect(@instance.all).to eq([])
+    end
+  end
+
+  describe '#no_notifications' do
+    it 'returns empty array if nothing added' do
+      expect(@instance.no_notifications).to eq([])
+    end
+
+    it 'excludes no notifications activity types' do
+      @instance.add(activity_type)
+      @instance.add(activity_type_no_notifications)
+
+      result = [activity_type]
+      expect(@instance.no_notifications).to eq(result)
     end
   end
 
