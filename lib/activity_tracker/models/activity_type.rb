@@ -22,9 +22,9 @@ module ActivityTracker
       end
     end
 
-    [
-      :metadata_fields, :to_text, :to_html, :batchable, :skip_sender, :level,
-      :namespace, :label, :description, :no_notifications
+    %i[
+      metadata_fields to_text to_html batchable skip_sender level namespace
+      label description no_notifications
     ].each do |field|
       define_method field do |val = nil, &block|
         var_name = "@#{field}"
