@@ -140,9 +140,7 @@ module ActivityTracker
         type_string = activity.activity_type
         type_obj = ActivityTypeRepository.instance.get(type_string)
 
-        if @receivers_filter
-          receivers.select!(&@receivers_filter)
-        end
+        receivers.select!(&@receivers_filter) if @receivers_filter
 
         if type_obj.skip_sender && activity.sender && !receivers.count.zero?
           receivers.reject! { |r| r.id == activity.sender_id }
