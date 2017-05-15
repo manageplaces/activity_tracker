@@ -19,10 +19,11 @@ module ActivityTracker
 
     def pending_to_send
       @klass.where(
-        'is_sent = ? AND (created_at <= ? and last_activity <= ?)',
+        'is_sent = ? AND (created_at <= ? OR last_activity <= ? OR is_closed = ?)',
         false,
         Time.zone.now - ActivityTracker.configuration.lifetime.seconds,
-        Time.zone.now - ActivityTracker.configuration.idle_time.seconds
+        Time.zone.now - ActivityTracker.configuration.idle_time.seconds,
+        true
       )
     end
 
@@ -30,10 +31,11 @@ module ActivityTracker
       return create(user_id, true) if is_closed
 
       @klass.where(
-        'receiver_id = ? AND (created_at > ? or last_activity > ?)',
+        'receiver_id = ? AND (created_at > ? or last_activity > ?) AND is_closed = ?',
         user_id,
         Time.zone.now - ActivityTracker.configuration.lifetime.seconds,
-        Time.zone.now - ActivityTracker.configuration.idle_time.seconds
+        Time.zone.now - ActivityTracker.configuration.idle_time.seconds,
+        false
       ).order('last_activity desc').first || create(user_id, is_closed)
     end
 
