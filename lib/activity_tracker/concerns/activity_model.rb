@@ -10,11 +10,21 @@ module ActivityTracker
 
       belongs_to :sender, class_name: ActivityTracker.configuration.user_class
       belongs_to :scope, polymorphic: true
+      belongs_to :resource, polymorphic: true
 
-      validates_presence_of :activity_type, :scope
+      validates_presence_of :activity_type, :scope, :resource
+
+      before_validation :auto_scope_resource
 
       def type
         activity_type ? ::ActivityTracker::ActivityTypeRepository.instance.get(activity_type) : nil
+      end
+
+      protected
+
+      def auto_scope_resource
+        self.resource = scope if scope && !resource
+        self.scope = resource if !scope && resource
       end
     end
   end

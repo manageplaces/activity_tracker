@@ -26,6 +26,7 @@ ActiveRecord::Schema.define do
     t.string :activity_type, required: true, null: false
     t.belongs_to :sender, index: true, foreign_key: true, on_delete: :nullify
     t.belongs_to :scope, polymorphic: true, null: false, required: true
+    t.belongs_to :resource, polymorphic: true, null: false, required: true
     t.boolean :is_hidden, required: true, default: false
     t.datetime :created_at, null: false, required: true
     t.text :metadata
