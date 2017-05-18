@@ -6,8 +6,8 @@ module ActivityTracker
 
     VALUES = {
       DISABLED => 'Disabled',
-      NOTIFICATION_ONLY => 'Notification only',
-      EMAIL => 'E-mail and notification'
+      NOTIFICATION_ONLY => 'App notification only',
+      EMAIL => 'E-mail and App notification'
     }.freeze
   end
 end
