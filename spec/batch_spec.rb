@@ -39,7 +39,7 @@ describe 'ActivityTracker.batch' do
   specify 'when batch called with one activity and one receiver' do
     user1.id
 
-    ActivityTracker.batch do
+    returned_activities = ActivityTracker.batch do
       user = user1
       task.instance_eval { track_activity(user, :type1) }
     end
@@ -47,6 +47,8 @@ describe 'ActivityTracker.batch' do
     activities = Activity.all
     activity = activities.first
 
+    expect(returned_activities.count).to eq(1)
+    expect(returned_activities).to eq(activities)
     expect(activities.count).to eq(1)
     expect(activity.notification_batches.count).to eq(1)
     expect(activity.notification_batches.first.receiver_id).to eq(user1.id)

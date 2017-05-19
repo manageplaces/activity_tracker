@@ -13,7 +13,7 @@ module ActivityTracker
       @receivers_filter = ActivityTracker.configuration.receivers_filter
 
       @activity_params = []
-      @activities = []
+      @activity_receiver_pairs = []
 
       @unbatchable = []
     end
@@ -42,7 +42,7 @@ module ActivityTracker
         CollectorRepository.instance.clear
       end
 
-      true
+      @activity_receiver_pairs.map { |activity, _receivers| activity }
     end
 
     protected
@@ -51,13 +51,13 @@ module ActivityTracker
       if @options.include?(:only)
         only = @options.delete(:only)
 
-        @activities_only = ActivityFilter.new(only)
+        @activity_receiver_pairs_only = ActivityFilter.new(only)
       end
 
       if @options.include?(:without)
         without = @options.delete(:without)
 
-        @activities_without = ActivityFilter.new(without)
+        @activity_receiver_pairs_without = ActivityFilter.new(without)
       end
 
       if @options.include?(:notifications)
@@ -83,7 +83,7 @@ module ActivityTracker
         @scope_filter = scope_filter.is_a?(Array) ? scope_filter : [scope_filter]
       end
 
-      raise ArgumentError if @activities_only && @activities_without
+      raise ArgumentError if @activity_receiver_pairs_only && @activity_receiver_pairs_without
       raise ArgumentError if @notifications_only && @notifications_without
     end
 
@@ -106,8 +106,8 @@ module ActivityTracker
 
     def filter_by_activity_type
       @activity_params.reject! do |activity_params|
-        (@activities_only && !@activities_only.match?(activity_params)) ||
-            (@activities_without && @activities_without.match?(activity_params))
+        (@activity_receiver_pairs_only && !@activity_receiver_pairs_only.match?(activity_params)) ||
+            (@activity_receiver_pairs_without && @activity_receiver_pairs_without.match?(activity_params))
       end
 
       @activity_params.map! do |activity_params|
@@ -122,7 +122,7 @@ module ActivityTracker
     end
 
     def build_activities
-      @activities = @activity_params.map do |activity_params|
+      @activity_receiver_pairs = @activity_params.map do |activity_params|
         receivers = activity_params[:receivers] || []
         activity_params.delete(:receivers)
 
@@ -136,7 +136,7 @@ module ActivityTracker
     end
 
     def filter_receivers
-      @activities.each do |activity, receivers|
+      @activity_receiver_pairs.each do |activity, receivers|
         type_string = activity.activity_type
         type_obj = ActivityTypeRepository.instance.get(type_string)
 
@@ -158,7 +158,7 @@ module ActivityTracker
         [activity, receivers]
       end
 
-      @activities.reject! do |activity, receivers|
+      @activity_receiver_pairs.reject! do |activity, receivers|
         receivers.empty? && !activity.scope
       end
     end
@@ -168,7 +168,7 @@ module ActivityTracker
     end
 
     def insert_activities
-      @activities.each do |activity, receivers|
+      @activity_receiver_pairs.each do |activity, receivers|
         type = ActivityTypeRepository.instance.get(activity.activity_type)
         batchable = type.batchable
 
