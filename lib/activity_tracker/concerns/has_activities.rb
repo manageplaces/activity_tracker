@@ -5,9 +5,6 @@ module ActivityTracker
     extend ActiveSupport::Concern
 
     included do
-      has_many :scope_activities, as: :resource, dependent: :destroy
-      has_many :resource_activities, as: :resource, dependent: :destroy
-
       def track_activity(receivers, type, options = {})
         if self.is_a?(ActiveRecord::Base) && !options.include?(:scope)
           options[:scope] = self
