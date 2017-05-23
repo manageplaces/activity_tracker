@@ -6,7 +6,7 @@ namespace 'activity_tracker' do
     batches = repo.pending_to_send
 
     batches.each do |batch|
-      NotificationBatchSenderWorker.perform_wrapper(batch.id)
+      ActivityTracker::NotificationBatchSenderWorker.perform_wrapper(batch.id)
     end
   end
 end
