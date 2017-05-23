@@ -25,6 +25,7 @@ require 'activity_tracker/concerns/user_model'
 require 'activity_tracker/track_activity'
 require 'activity_tracker/define_activity'
 require 'activity_tracker/notification_batch_sender'
+require 'activity_tracker/workers/notification_batch_sender_worker'
 
 require 'tasks.rb' if defined?(Rails)
 

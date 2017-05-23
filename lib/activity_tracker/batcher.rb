@@ -189,9 +189,7 @@ module ActivityTracker
 
     def send_unbatchable
       @unbatchable.each do |batch|
-        ns = NotificationBatchSender.new(batch)
-
-        ns.process
+        NotificationBatchSenderWorker.perform_wrapper(batch.id)
       end
     end
   end

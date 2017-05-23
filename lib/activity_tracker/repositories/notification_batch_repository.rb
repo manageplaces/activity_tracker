@@ -17,6 +17,10 @@ module ActivityTracker
       )
     end
 
+    def get_by_id(id)
+      @klass.find_by_id(id)
+    end
+
     def pending_to_send
       @klass.where(
         'is_sent = ? AND (created_at <= ? OR last_activity <= ? OR is_closed = ?)',
