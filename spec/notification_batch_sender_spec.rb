@@ -1,22 +1,18 @@
 require 'spec_helper'
 
-probe = []
-
-def reset_probe
-  probe = []
-end
-
 describe ActivityTracker::NotificationBatchSender do
-  before(:all) do
+  before(:each) do
     ActivityTracker.configure do |c|
-      c.default_mailer = lambda do |user, activities|
-        probe << [user, activities]
-      end
+      c.default_mailer = probe_block
     end
   end
 
-  before(:each) { reset_probe }
-
+  let(:probe) { [] }
+  let(:probe_block) do
+    lambda do |user, activities|
+      probe << [user, activities]
+    end
+  end
   let(:notification1) { build :notification }
   let(:notification_batch_amendable) do
     create :notification_batch, created_at: Time.zone.now, is_sent: false
