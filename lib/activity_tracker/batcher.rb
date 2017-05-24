@@ -5,7 +5,6 @@ module ActivityTracker
       @block = block
 
       options_init
-      default_params_init
 
       @activity_repository = ActivityRepository.new
       @notification_batch_repository = NotificationBatchRepository.new
@@ -161,10 +160,6 @@ module ActivityTracker
       @activity_receiver_pairs.reject! do |activity, receivers|
         receivers.empty? && !activity.scope
       end
-    end
-
-    def default_params_init
-      @default_params = @options
     end
 
     def insert_activities
