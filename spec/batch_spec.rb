@@ -11,7 +11,7 @@ describe 'ActivityTracker.batch' do
     end
   end
 
-  before(:each) { probe = []}
+  before(:each) { probe = [] }
   let(:probe) { [] }
   let(:user1) { create :user }
   let(:user2) { create :user }
@@ -211,7 +211,7 @@ describe 'ActivityTracker.batch' do
       expect(activities.count).to eq(3)
       expect(activities_hidden.count).to eq(2)
 
-      cnt = Notification.all.select { |n| n.activity.scope != task }.count
+      cnt = Notification.all.reject { |n| n.activity.scope == task }.count
       expect(cnt).to eq(0)
     end
 
@@ -251,7 +251,6 @@ describe 'ActivityTracker.batch' do
 
       activities = Activity.all
       activities_hidden = Activity.where(is_hidden: true)
-      activity = activities.first
 
       expect(activities.count).to eq(2)
       expect(activities_hidden.count).to eq(1)
