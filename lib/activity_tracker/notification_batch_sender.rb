@@ -2,8 +2,9 @@ module ActivityTracker
   class NotificationBatchSender
     def initialize(notification_batch)
       @notification_batch = notification_batch
+      @activity_type_repository = ActivityTypeRepository.instance
 
-      @mailer_lambda = ActivityTracker.configuration.default_mailer
+      @default_mailer = ActivityTracker.configuration.default_mailer
     end
 
     def process
@@ -14,7 +15,7 @@ module ActivityTracker
       @activities = @notifications.map(&:activity).compact
 
       unless @activities.count.zero?
-        @mailer_lambda.call(@notification_batch.receiver, @activities)
+        send_mail(@notification_batch.receiver, @activities)
       end
 
       set_as_sent
@@ -23,6 +24,19 @@ module ActivityTracker
     end
 
     protected
+
+    def send_mail(receiver, activities)
+      types = activities.map(&:activity_type).uniq
+
+      if types.count == 1
+        activity_type = @activity_type_repository.get(types.first)
+        if activity_type.mailer
+          return activity_type.mailer.call(receiver, activities)
+        end
+      end
+
+      @default_mailer.call(receiver, activities)
+    end
 
     def set_as_sent
       return if @notification_batch.is_sent

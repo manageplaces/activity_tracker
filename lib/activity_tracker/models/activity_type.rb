@@ -24,7 +24,7 @@ module ActivityTracker
 
     %i[
       metadata_fields to_text to_html batchable skip_sender level namespace
-      label description no_notifications
+      label description no_notifications mailer
     ].each do |field|
       define_method field do |val = nil, &block|
         var_name = "@#{field}"
