@@ -1,13 +1,7 @@
 require 'spec_helper'
 
-probe = []
-
-def reset_probe
-  probe = []
-end
-
 describe 'ActivityTracker.batch' do
-  before(:all) do
+  before(:each) do
     load File.dirname(__FILE__) + '/support/activity_types.rb'
 
     ActivityTracker.configure do |c|
@@ -17,8 +11,8 @@ describe 'ActivityTracker.batch' do
     end
   end
 
-  before(:each) { reset_probe }
-
+  before(:each) { probe = []}
+  let(:probe) { [] }
   let(:user1) { create :user }
   let(:user2) { create :user }
   let(:user3) { create :user }
@@ -68,8 +62,28 @@ describe 'ActivityTracker.batch' do
     expect(activities.count).to eq(1)
     expect(activity.sender).to eq(user2)
     expect(activity.notification_batches.count).to eq(1)
+    expect(activity.notification_batches.first.is_closed).to eq(false)
     expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
     expect(probe.count).to eq(0)
+  end
+
+  specify 'when batch called with close_batches param' do
+    user1.id
+
+    returned_activities = ActivityTracker.batch(close_batches: true) do
+      user = user1
+      task.instance_eval { track_activity(user, :type1) }
+    end
+
+    activities = Activity.all
+    activity = activities.first
+
+    expect(returned_activities.count).to eq(1)
+    expect(returned_activities).to eq(activities)
+    expect(activities.count).to eq(1)
+    expect(activity.notification_batches.count).to eq(1)
+    expect(activity.notification_batches.first.is_closed).to eq(true)
+    expect(activity.notification_batches.first.receiver_id).to eq(user1.id)
   end
 
   describe 'type filters - activities' do

@@ -14,7 +14,8 @@ module ActivityTracker
       @activity_params = []
       @activity_receiver_pairs = []
 
-      @unbatchable = []
+      @new_batch = false
+      @to_close = []
     end
 
     def process
@@ -32,7 +33,7 @@ module ActivityTracker
         filter_receivers
         insert_activities
 
-        send_unbatchable
+        send_closed
       rescue StandardError => e
         # :nocov:
         raise e
@@ -80,6 +81,10 @@ module ActivityTracker
         scope_filter = @options.delete(:scope_filter)
 
         @scope_filter = scope_filter.is_a?(Array) ? scope_filter : [scope_filter]
+      end
+
+      if @options.include?(:close_batches)
+        @close_batches = @options.delete(:close_batches)
       end
 
       raise ArgumentError if @activity_receiver_pairs_only && @activity_receiver_pairs_without
@@ -175,15 +180,22 @@ module ActivityTracker
             send_mail: level == ActivityTracker::NotificationLevels::EMAIL
           )
 
-          @unbatchable << batch unless batchable
+          if (!batchable || @close_batches) && !@to_close.include?(batch)
+            @to_close << batch
+          end
         end
 
         @activity_repository.add(activity)
       end
     end
 
-    def send_unbatchable
-      @unbatchable.each do |batch|
+    def send_closed
+      @to_close.each do |batch|
+        unless batch.is_closed?
+          batch.is_closed = true
+          @notification_batch_repository.add(batch)
+        end
+
         NotificationBatchSenderWorker.perform_wrapper(batch.id)
       end
     end
