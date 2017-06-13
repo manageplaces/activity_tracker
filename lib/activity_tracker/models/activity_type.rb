@@ -22,10 +22,7 @@ module ActivityTracker
       end
     end
 
-    %i[
-      metadata_fields to_text to_html batchable skip_sender level namespace
-      label description no_notifications mailer to_title
-    ].each do |field|
+    def self.field_setter(field)
       define_method field do |val = nil, &block|
         var_name = "@#{field}"
 
@@ -35,6 +32,13 @@ module ActivityTracker
           instance_variable_set(var_name, block || val)
         end
       end
+    end
+
+    %i[
+      metadata_fields batchable skip_sender level label mailer
+      description no_notifications
+    ].each do |field|
+      field_setter(field.to_sym)
     end
   end
 end

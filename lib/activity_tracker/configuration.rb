@@ -25,5 +25,13 @@ module ActivityTracker
 
       @send_mails_async = false
     end
+
+    def activity_type_custom_fields(fields = [])
+      fields.each do |field|
+        ActivityType.instance_eval do
+          field_setter(field.to_sym)
+        end
+      end
+    end
   end
 end
