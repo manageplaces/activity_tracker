@@ -5,7 +5,7 @@ module ActivityTracker
     extend ActiveSupport::Concern
 
     included do
-      has_many ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym
+      has_many ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym, dependent: :destroy
       has_many ActivityTracker.configuration.notification_batch_class.underscore.pluralize.to_sym, through: ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym
 
       belongs_to :sender, class_name: ActivityTracker.configuration.user_class
