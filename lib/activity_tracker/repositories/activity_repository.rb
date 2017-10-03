@@ -23,7 +23,7 @@ module ActivityTracker
     def factory(params)
       activity = @klass.new
 
-      params.each  { |k, v| activity.send("#{k}=".to_sym, v) }
+      params.each { |k, v| activity.send("#{k}=".to_sym, v) }
 
       activity
     end
