@@ -21,6 +21,7 @@ module ActivityTracker
     def process
       return false unless @block
 
+      CollectorRepository.instance.clear
       @collector = CollectorRepository.instance.get
 
       begin
