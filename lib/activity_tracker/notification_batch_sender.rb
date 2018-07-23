@@ -42,7 +42,7 @@ module ActivityTracker
       return if @notification_batch.is_sent
 
       @notification_batch.is_sent = true
-      @notification_batch.save
+      @notification_batch.save(validate: false)
     end
   end
 end
