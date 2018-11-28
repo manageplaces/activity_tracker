@@ -9,7 +9,6 @@ module ActivityTracker
       has_many ActivityTracker.configuration.activity_class.underscore.pluralize.to_sym, after_add: :update_last_activity, through: ActivityTracker.configuration.notification_class.underscore.pluralize.to_sym
       belongs_to :receiver, class_name: ActivityTracker.configuration.user_class
 
-      validates_presence_of :receiver
       validates_inclusion_of :is_closed, in: [true, false]
       validates_inclusion_of :is_sent, in: [true, false]
 
